@@ -4,9 +4,10 @@
  */
 
 import { useState } from 'react';
-import { Menu, X, SlidersHorizontal, Map } from 'lucide-react';
+import { Menu, X, SlidersHorizontal, Map, Sun, Moon } from 'lucide-react';
 import { Category, Project } from '../types';
 import { CATEGORIES_INFO, PROJECTS_INFO } from '../data';
+import { useTheme } from '../context/ThemeContext';
 
 interface NavbarProps {
   activeTab: 'home' | 'works' | 'about';
@@ -25,6 +26,7 @@ export default function Navbar({
   onSelectCategory,
   onSelectProject,
 }: NavbarProps) {
+  const { dark, toggle: toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showWorksDropdown, setShowWorksDropdown] = useState(false);
   const [showProjectsDropdown, setShowProjectsDropdown] = useState(false);
@@ -53,17 +55,17 @@ export default function Navbar({
   };
 
   return (
-    <nav id="app-navbar-main" className="w-full bg-[#ebebeb]/95 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-300 select-none">
+    <nav id="app-navbar-main" className="w-full bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-300 dark:border-neutral-700 select-none transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
         <div
           id="navbar-brand-logo"
           onClick={() => handleNormalTabClick('home')}
           className="cursor-pointer group flex items-baseline gap-2"
         >
-          <span className="font-display font-black text-2xl tracking-tighter text-[#1a1a1a] group-hover:text-red-600 transition-colors uppercase">
+          <span className="font-display font-black text-2xl tracking-tighter text-[#1a1a1a] dark:text-[#ebebeb] group-hover:text-red-600 transition-colors uppercase">
             Theodore©
           </span>
-          <span className="font-mono text-[9px] text-neutral-500 tracking-widest uppercase hidden md:inline">
+          <span className="font-mono text-[9px] text-neutral-500 dark:text-neutral-400 tracking-widest uppercase hidden md:inline">
             LAND & TOPOGRAPHY ARCHIVE
           </span>
         </div>
@@ -71,8 +73,8 @@ export default function Navbar({
         <div className="hidden lg:flex items-center gap-8 text-xs font-mono tracking-wider">
           <button
             onClick={() => handleNormalTabClick('home')}
-            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] uppercase ${
-              activeTab === 'home' ? 'text-[#1a1a1a] font-bold' : 'text-neutral-500'
+            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase ${
+              activeTab === 'home' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
             }`}
           >
             Home / 首页
@@ -86,8 +88,8 @@ export default function Navbar({
             <button
               id="nav-works-dropdown-btn"
               onClick={() => handleCategoryClick(null)}
-              className={`cursor-pointer transition-colors hover:text-[#1a1a1a] uppercase flex items-center gap-1 py-4 ${
-                activeTab === 'works' && !selectedProject ? 'text-[#1a1a1a] font-bold' : 'text-neutral-500'
+              className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase flex items-center gap-1 py-4 ${
+                activeTab === 'works' && !selectedProject ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
               }`}
             >
               Works / 作品分类
@@ -95,10 +97,10 @@ export default function Navbar({
             </button>
 
             {showWorksDropdown && (
-              <div className="absolute top-12 left-0 w-56 bg-[#e0e0e0] border border-neutral-300 p-2 shadow-xl flex flex-col divide-y divide-neutral-300">
+              <div className="absolute top-12 left-0 w-56 bg-[#e0e0e0] dark:bg-[#2a2a2a] border border-neutral-300 dark:border-neutral-700 p-2 shadow-xl flex flex-col divide-y divide-neutral-300 dark:divide-neutral-700">
                 <button
                   onClick={() => handleCategoryClick(null)}
-                  className="w-full text-left px-3 py-2 text-[10.5px] text-neutral-600 hover:text-[#1a1a1a] hover:bg-neutral-200 transition-all font-mono"
+                  className="w-full text-left px-3 py-2 text-[10.5px] text-neutral-600 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all font-mono"
                 >
                   ALL WORKS / 全部作品
                 </button>
@@ -107,11 +109,11 @@ export default function Navbar({
                     key={cat}
                     onClick={() => handleCategoryClick(cat)}
                     className={`w-full text-left px-3 py-2 text-[10.5px] transition-all font-mono flex items-center justify-between ${
-                      selectedCategory === cat ? 'text-[#1a1a1a] bg-neutral-200 font-bold' : 'text-neutral-600 hover:text-[#1a1a1a] hover:bg-neutral-200'
+                      selectedCategory === cat ? 'text-[#1a1a1a] dark:text-[#ebebeb] bg-neutral-200 dark:bg-neutral-800 font-bold' : 'text-neutral-600 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700'
                     }`}
                   >
                     <span>{CATEGORIES_INFO[cat].nameZh}</span>
-                    <span className="text-neutral-400 text-[9px]">{CATEGORIES_INFO[cat].nameEn}</span>
+                    <span className="text-neutral-400 dark:text-neutral-500 text-[9px]">{CATEGORIES_INFO[cat].nameEn}</span>
                   </button>
                 ))}
               </div>
@@ -125,9 +127,9 @@ export default function Navbar({
           >
             <button
               id="nav-projects-dropdown-btn"
-              onClick={() => handleProjectClick(null)}
-              className={`cursor-pointer transition-colors hover:text-[#1a1a1a] uppercase flex items-center gap-1 py-4 ${
-                selectedProject ? 'text-red-600 font-bold' : 'text-neutral-500'
+              onClick={() => handleProjectClick(Project.OldTowns)}
+              className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase flex items-center gap-1 py-4 ${
+                selectedProject ? 'text-red-600 font-bold' : 'text-neutral-500 dark:text-neutral-400'
               }`}
             >
               Regional Projects / 区域专案
@@ -135,13 +137,13 @@ export default function Navbar({
             </button>
 
             {showProjectsDropdown && (
-              <div className="absolute top-12 left-0 w-64 bg-[#e0e0e0] border border-neutral-300 p-2 shadow-xl flex flex-col divide-y divide-neutral-300">
+              <div className="absolute top-12 left-0 w-64 bg-[#e0e0e0] dark:bg-[#2a2a2a] border border-neutral-300 dark:border-neutral-700 p-2 shadow-xl flex flex-col divide-y divide-neutral-300 dark:divide-neutral-700">
                 {Object.values(Project).map((proj) => (
                   <button
                     key={proj}
                     onClick={() => handleProjectClick(proj)}
                     className={`w-full text-left px-3 py-2 text-[10.5px] transition-all font-mono flex items-center justify-between ${
-                      selectedProject === proj ? 'text-red-600 bg-neutral-200 font-bold' : 'text-neutral-600 hover:text-[#1a1a1a] hover:bg-neutral-200'
+                      selectedProject === proj ? 'text-red-600 bg-neutral-200 dark:bg-neutral-800 font-bold' : 'text-neutral-600 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700'
                     }`}
                   >
                     <span>专题: {PROJECTS_INFO[proj].nameZh}</span>
@@ -154,22 +156,29 @@ export default function Navbar({
 
           <button
             onClick={() => handleNormalTabClick('about')}
-            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] uppercase ${
-              activeTab === 'about' ? 'text-[#1a1a1a] font-bold' : 'text-neutral-500'
+            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase ${
+              activeTab === 'about' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
             }`}
           >
             About & Inquiries / 关于与联络
           </button>
         </div>
 
-        <div className="hidden lg:flex items-center gap-2 font-mono text-[9px] text-neutral-400">
+        <div className="hidden lg:flex items-center gap-2 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
+          <button
+            onClick={toggleTheme}
+            className="p-1.5 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
+            title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
           <span>CALIBRATED / ZHOUTINGRAN_ONLINE</span>
         </div>
 
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="lg:hidden p-2 text-neutral-500 hover:text-[#1a1a1a] bg-neutral-200 border border-neutral-300"
+          className="lg:hidden p-2 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700"
           title="Open Menu"
         >
           <Menu className="w-5 h-5" />
@@ -177,14 +186,14 @@ export default function Navbar({
       </div>
 
       {mobileMenuOpen && (
-        <div id="mobile-menu-drawer" className="fixed inset-0 z-50 bg-[#ebebeb] flex flex-col p-6 animate-fade-in divide-y divide-neutral-300">
+        <div id="mobile-menu-drawer" className="fixed inset-0 z-50 bg-[#ebebeb] dark:bg-[#1a1a1a] flex flex-col p-6 animate-fade-in divide-y divide-neutral-300 dark:divide-neutral-700">
           <div className="flex items-center justify-between h-14 pb-4">
-            <span className="font-display font-black text-xl text-[#1a1a1a] uppercase tracking-tighter">
+            <span className="font-display font-black text-xl text-[#1a1a1a] dark:text-[#ebebeb] uppercase tracking-tighter">
               Void Menu
             </span>
             <button
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 text-neutral-500 hover:text-[#1a1a1a] bg-neutral-200"
+              className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] bg-neutral-200 dark:bg-neutral-800"
               title="Close Menu"
             >
               <X className="w-5 h-5" />
@@ -195,21 +204,21 @@ export default function Navbar({
             <button
               onClick={() => handleNormalTabClick('home')}
               className={`text-left uppercase py-2 hover:text-red-600 ${
-                activeTab === 'home' ? 'text-[#1a1a1a] font-bold text-lg' : 'text-neutral-500'
+                activeTab === 'home' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold text-lg' : 'text-neutral-500 dark:text-neutral-400'
               }`}
             >
               [00] Home / 首页导航
             </button>
 
             <div className="pt-2">
-              <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-widest flex items-center gap-1 mb-2">
+              <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
                 <SlidersHorizontal className="w-3 h-3" />
                 Work Classifications / 作品列表
               </span>
-              <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300">
+              <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300 dark:border-neutral-700">
                 <button
                   onClick={() => handleCategoryClick(null)}
-                  className="text-left text-neutral-500 hover:text-[#1a1a1a] text-xs py-1.5"
+                  className="text-left text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] text-xs py-1.5"
                 >
                   ALL CAPTURES (全部作品)
                 </button>
@@ -218,32 +227,32 @@ export default function Navbar({
                     key={cat}
                     onClick={() => handleCategoryClick(cat)}
                     className={`text-left text-xs py-1.5 flex justify-between ${
-                      selectedCategory === cat ? 'text-[#1a1a1a] font-bold' : 'text-neutral-500 hover:text-[#1a1a1a]'
+                      selectedCategory === cat ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
                     }`}
                   >
                     <span>{CATEGORIES_INFO[cat].nameZh}</span>
-                    <span className="text-[10px] text-neutral-400">{CATEGORIES_INFO[cat].nameEn}</span>
+                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{CATEGORIES_INFO[cat].nameEn}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-widest flex items-center gap-1 mb-2">
+              <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
                 <Map className="w-3 h-3" />
                 On-Going Projects / 区域专案
               </span>
-              <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300">
+              <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300 dark:border-neutral-700">
                 {Object.values(Project).map((proj) => (
                   <button
                     key={proj}
                     onClick={() => handleProjectClick(proj)}
                     className={`text-left text-xs py-1.5 flex justify-between ${
-                      selectedProject === proj ? 'text-red-600 font-bold' : 'text-neutral-500 hover:text-[#1a1a1a]'
+                      selectedProject === proj ? 'text-red-600 font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
                     }`}
                   >
                     <span>专题: {PROJECTS_INFO[proj].nameZh}</span>
-                    <span className="text-[10px] text-neutral-400">{PROJECTS_INFO[proj].duration}</span>
+                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{PROJECTS_INFO[proj].duration}</span>
                   </button>
                 ))}
               </div>
@@ -251,15 +260,15 @@ export default function Navbar({
 
             <button
               onClick={() => handleNormalTabClick('about')}
-              className={`text-left uppercase py-4 border-t border-neutral-300 hover:text-red-600 mt-auto ${
-                activeTab === 'about' ? 'text-[#1a1a1a] font-bold text-lg' : 'text-neutral-500'
+              className={`text-left uppercase py-4 border-t border-neutral-300 dark:border-neutral-700 hover:text-red-600 mt-auto ${
+                activeTab === 'about' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold text-lg' : 'text-neutral-500 dark:text-neutral-400'
               }`}
             >
               About & Inquiries / 关于与联络
             </button>
           </div>
 
-          <div className="py-6 font-mono text-[9px] text-neutral-500">
+          <div className="py-6 font-mono text-[9px] text-neutral-500 dark:text-neutral-400">
             © CHEN LU PHOTOGRAPHY ARCHIVES. METADATA REVISION 2026.
           </div>
         </div>
