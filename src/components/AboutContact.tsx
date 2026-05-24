@@ -16,21 +16,41 @@ export default function AboutContact() {
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
     setSending(true);
-    setTimeout(() => {
-      setSending(false);
-      setFormSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        message: '',
+    setSendError(false);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: '781b372f-89b5-4d0f-ae49-d1edbb7e61d2',
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          from_name: formData.name,
+          subject: `新咨询来自 ${formData.name} - Theodore Photography`,
+        }),
       });
-    }, 1200);
+
+      const result = await response.json();
+      if (result.success) {
+        setFormSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setSendError(true);
+      }
+    } catch {
+      setSendError(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -127,6 +147,11 @@ export default function AboutContact() {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                {sendError && (
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 text-xs text-red-600 font-mono">
+                    发送失败，请稍后重试或直接发送邮件至 1532737473@qq.com
+                  </div>
+                )}
                 <div>
                   <label htmlFor="name" className="block font-mono text-[10px] text-neutral-500 dark:text-neutral-400 uppercase mb-1">
                     Your Name / 您的姓名 *
