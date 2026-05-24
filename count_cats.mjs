@@ -1,0 +1,11 @@
+import fs from 'fs';
+const c = fs.readFileSync('src/data.ts', 'utf8');
+const cats = c.match(/category: Category\.\w+/g);
+const counts = {};
+cats.forEach(cat => { counts[cat] = (counts[cat] || 0) + 1; });
+console.log('分类统计:');
+console.log('  风光 (Landscape):', counts['category: Category.Landscape'] || 0);
+console.log('  纪实 (Documentary):', counts['category: Category.Documentary'] || 0);
+console.log('  创意 (Creative):', counts['category: Category.Creative'] || 0);
+console.log('  新地形 (NewTopographics):', counts['category: Category.NewTopographics'] || 0);
+console.log('  总计:', cats.length);
