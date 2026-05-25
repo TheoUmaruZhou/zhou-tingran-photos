@@ -205,6 +205,7 @@ export default function App() {
           setActiveTab(tab);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
+        onOpenGuestbook={() => setGuestbookOpen(true)}
       />
 
       <footer id="app-footer-minimal" className="w-full py-16 bg-[#ddd] dark:bg-[#111] border-t border-neutral-300 dark:border-neutral-700 font-mono text-xs text-neutral-600 dark:text-neutral-400 transition-colors duration-300">
