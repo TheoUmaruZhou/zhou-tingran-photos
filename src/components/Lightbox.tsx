@@ -5,7 +5,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, Camera, Cpu, Compass, Settings, Calendar, Eye, Play, Pause, Share2, Check, Heart } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Camera, Cpu, Compass, Settings, Calendar, Eye, Play, Pause, Share2, Check, Heart, Download } from 'lucide-react';
 import { Photograph } from '../types';
 import { supabase } from '../lib/supabase';
 
@@ -32,6 +32,7 @@ export default function Lightbox({
   const [liked, setLiked] = useState(() => localStorage.getItem(`liked_${photo.id}`) === 'true');
   const [loadingLikes, setLoadingLikes] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -98,6 +99,62 @@ export default function Lightbox({
       setTimeout(() => setCopied(false), 2000);
     });
   }, [photo.id]);
+
+  const handleDownload = useCallback(async () => {
+    setDownloading(true);
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.referrerPolicy = 'no-referrer';
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = photo.imageUrl;
+      });
+
+      const borderSize = 80;
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width + borderSize * 2;
+      canvas.height = img.height + borderSize * 2;
+      const ctx = canvas.getContext('2d')!;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.drawImage(img, borderSize, borderSize);
+
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(borderSize - 1, borderSize - 1, img.width + 2, img.height + 2);
+
+      ctx.fillStyle = '#1a1a1a';
+      ctx.font = `bold ${Math.max(14, Math.floor(borderSize * 0.22))}px monospace`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('THEO UMARU ZHOU', borderSize, canvas.height - borderSize / 2);
+
+      ctx.font = `${Math.max(10, Math.floor(borderSize * 0.16))}px monospace`;
+      ctx.fillStyle = '#999999';
+      ctx.fillText(`© ${photo.year} ALL RIGHTS RESERVED`, borderSize, canvas.height - borderSize / 2 + Math.max(16, borderSize * 0.28));
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#cc0000';
+      ctx.font = `bold ${Math.max(12, Math.floor(borderSize * 0.18))}px monospace`;
+      ctx.fillText(photo.id.toUpperCase(), canvas.width - borderSize, canvas.height - borderSize / 2);
+
+      ctx.fillStyle = '#999999';
+      ctx.font = `${Math.max(10, Math.floor(borderSize * 0.15))}px monospace`;
+      ctx.fillText(`${photo.location}`, canvas.width - borderSize, canvas.height - borderSize / 2 + Math.max(16, borderSize * 0.28));
+
+      const link = document.createElement('a');
+      link.download = `THEO_${photo.id.toUpperCase()}_WATERMARKED.jpg`;
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
+      link.click();
+    } catch {
+      window.open(photo.imageUrl, '_blank');
+    }
+    setDownloading(false);
+  }, [photo]);
 
   useEffect(() => {
     onNextRef.current = onNext;
@@ -363,6 +420,14 @@ export default function Lightbox({
                 >
                   <Heart className={`w-5 h-5 transition-transform duration-200 ${liked ? 'scale-110' : ''}`} fill={liked ? '#ef4444' : 'none'} />
                   <span className={liked ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'}>{likes > 0 ? likes : 'LIKE'}</span>
+                </button>
+                <button
+                  onClick={handleDownload}
+                  disabled={downloading}
+                  className="flex items-center gap-2 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>{downloading ? 'PROCESSING...' : 'DOWNLOAD'}</span>
                 </button>
               </div>
               <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
