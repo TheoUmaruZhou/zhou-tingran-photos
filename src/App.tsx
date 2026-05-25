@@ -12,8 +12,10 @@ import Lightbox from './components/Lightbox';
 import AboutContact from './components/AboutContact';
 import CustomCursor from './components/CustomCursor';
 import MobileBottomNav from './components/MobileBottomNav';
+import Guestbook from './components/Guestbook';
 import { Category, Project, Photograph } from './types';
 import { ArrowUp } from 'lucide-react';
+import { PHOTOGRAPHS } from './data';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'works' | 'about'>('home');
@@ -23,6 +25,21 @@ export default function App() {
   const [activePhoto, setActivePhoto] = useState<Photograph | null>(null);
   const [activePhotoList, setActivePhotoList] = useState<Photograph[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [guestbookOpen, setGuestbookOpen] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const photoId = params.get('photo');
+    if (photoId) {
+      const photo = PHOTOGRAPHS.find((p) => p.id === photoId);
+      if (photo) {
+        setActiveTab('works');
+        setActivePhoto(photo);
+        setActivePhotoList(PHOTOGRAPHS);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,6 +118,7 @@ export default function App() {
         }}
         onSelectCategory={setSelectedCategory}
         onSelectProject={setSelectedProject}
+        onOpenGuestbook={() => setGuestbookOpen(true)}
       />
 
       <main id="app-main-content" className="flex-1 w-full flex flex-col items-center pb-16 lg:pb-0">
@@ -178,6 +196,8 @@ export default function App() {
           </motion.button>
         )}
       </AnimatePresence>
+
+      <Guestbook isOpen={guestbookOpen} onClose={() => setGuestbookOpen(false)} />
 
       <MobileBottomNav
         activeTab={activeTab}

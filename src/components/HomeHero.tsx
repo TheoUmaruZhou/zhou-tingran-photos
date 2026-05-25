@@ -211,7 +211,7 @@ export default function HomeHero({
                   <h4 className="text-2xl md:text-4xl lg:text-5xl font-display font-extrabold group-hover:translate-x-2 transition-transform duration-500 uppercase tracking-tight text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb]">
                     {row.title}
                   </h4>
-                  <p className="text-sm font-mono text-neutral-500 dark:text-neutral-400 mt-1 md:mt-2 group-hover:text-neutral-600 dark:group-hover:text-neutral-400 transition-colors">
+                  <p className="text-sm font-mono text-neutral-500 dark:text-neutral-400 mt-1 md:mt-2 group-hover:text-red-600 transition-colors">
                     {row.subtitle} — {row.desc}
                   </p>
                 </div>

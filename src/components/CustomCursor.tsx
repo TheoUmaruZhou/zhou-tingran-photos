@@ -28,8 +28,8 @@ export default function CustomCursor() {
 
     const animate = () => {
       setPos((prev) => ({
-        x: prev.x + (targetRef.current.x - prev.x) * 0.15,
-        y: prev.y + (targetRef.current.y - prev.y) * 0.15,
+        x: prev.x + (targetRef.current.x - prev.x) * 0.5,
+        y: prev.y + (targetRef.current.y - prev.y) * 0.5,
       }));
       rafRef.current = requestAnimationFrame(animate);
     };

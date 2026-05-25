@@ -5,7 +5,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, Camera, Cpu, Compass, Settings, Calendar, Eye, Play, Pause, Share2, Check } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Camera, Cpu, Compass, Settings, Calendar, Eye, Play, Pause, Share2, Check, Heart } from 'lucide-react';
 import { Photograph } from '../types';
 
 interface LightboxProps {
@@ -27,6 +27,37 @@ export default function Lightbox({
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const onNextRef = useRef(onNext);
   const [copied, setCopied] = useState(false);
+
+  const getLikesKey = (id: string) => `likes_${id}`;
+  const getLikedKey = (id: string) => `liked_${id}`;
+
+  const [likes, setLikes] = useState(() => {
+    return parseInt(localStorage.getItem(getLikesKey(photo.id)) || '0', 10);
+  });
+  const [liked, setLiked] = useState(() => {
+    return localStorage.getItem(getLikedKey(photo.id)) === 'true';
+  });
+
+  useEffect(() => {
+    setLikes(parseInt(localStorage.getItem(getLikesKey(photo.id)) || '0', 10));
+    setLiked(localStorage.getItem(getLikedKey(photo.id)) === 'true');
+  }, [photo.id]);
+
+  const handleLike = useCallback(() => {
+    if (liked) {
+      const newLikes = Math.max(0, likes - 1);
+      setLikes(newLikes);
+      setLiked(false);
+      localStorage.setItem(getLikesKey(photo.id), String(newLikes));
+      localStorage.setItem(getLikedKey(photo.id), 'false');
+    } else {
+      const newLikes = likes + 1;
+      setLikes(newLikes);
+      setLiked(true);
+      localStorage.setItem(getLikesKey(photo.id), String(newLikes));
+      localStorage.setItem(getLikedKey(photo.id), 'true');
+    }
+  }, [liked, likes, photo.id]);
 
   const handleShare = useCallback(() => {
     const url = `${window.location.origin}?photo=${photo.id}`;
@@ -270,13 +301,23 @@ export default function Lightbox({
             </div>
 
             <div className="mt-12 pt-6 border-t border-neutral-300 dark:border-neutral-700 flex flex-col gap-3">
-              <button
-                onClick={handleShare}
-                className="flex items-center gap-2 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
-              >
-                {copied ? <Check className="w-3 h-3 text-green-600" /> : <Share2 className="w-3 h-3" />}
-                <span>{copied ? 'LINK COPIED' : 'SHARE THIS PHOTO'}</span>
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleShare}
+                  className="flex items-center gap-2 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
+                >
+                  {copied ? <Check className="w-5 h-5 text-green-600" /> : <Share2 className="w-5 h-5" />}
+                  <span>{copied ? 'LINK COPIED' : 'SHARE'}</span>
+                </button>
+                <button
+                  onClick={handleLike}
+                  className="flex items-center gap-2 font-mono text-[10px] transition-colors cursor-pointer"
+                  style={{ color: liked ? '#ef4444' : undefined }}
+                >
+                  <Heart className={`w-5 h-5 transition-transform duration-200 ${liked ? 'scale-110' : ''}`} fill={liked ? '#ef4444' : 'none'} />
+                  <span className={liked ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'}>{likes > 0 ? likes : 'LIKE'}</span>
+                </button>
+              </div>
               <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
                 <Eye className="w-3 h-3 text-red-600" />
                 <span>ALL RIGHTS RESERVED ZHOU©️</span>

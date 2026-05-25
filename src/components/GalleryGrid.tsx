@@ -26,8 +26,8 @@ function ScrollRevealItem({ index, children }: { index: number; children: ReactN
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.95 }}
       transition={{
-        duration: 0.35,
-        delay: Math.min(index * 0.04, 0.8),
+        duration: 0.2,
+        delay: Math.min(index * 0.02, 0.4),
         ease: [0.34, 1.56, 0.64, 1],
       }}
     >

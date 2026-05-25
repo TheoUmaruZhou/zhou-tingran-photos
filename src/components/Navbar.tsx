@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { Menu, X, SlidersHorizontal, Map, Sun, Moon } from 'lucide-react';
+import { Menu, X, SlidersHorizontal, Map, Sun, Moon, PenLine } from 'lucide-react';
 import { Category, Project } from '../types';
 import { CATEGORIES_INFO, PROJECTS_INFO } from '../data';
 import { useTheme } from '../context/ThemeContext';
@@ -16,6 +16,7 @@ interface NavbarProps {
   onNavigateTab: (tab: 'home' | 'works' | 'about') => void;
   onSelectCategory: (category: Category | null) => void;
   onSelectProject: (project: Project | null) => void;
+  onOpenGuestbook: () => void;
 }
 
 export default function Navbar({
@@ -25,6 +26,7 @@ export default function Navbar({
   onNavigateTab,
   onSelectCategory,
   onSelectProject,
+  onOpenGuestbook,
 }: NavbarProps) {
   const { dark, toggle: toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -165,15 +167,24 @@ export default function Navbar({
         </div>
 
         <div className="hidden lg:flex items-center gap-2 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
+          <span>CALIBRATED / ZHOUTINGRAN_ONLINE</span>
+          <span className="text-neutral-300 dark:text-neutral-600">|</span>
+          <button
+            onClick={onOpenGuestbook}
+            className="flex items-center gap-1.5 text-neutral-500 dark:text-neutral-400 hover:text-red-600 transition-colors cursor-pointer"
+            title="Open Guestbook"
+          >
+            <PenLine className="w-5 h-5" />
+            <span>GUESTBOOK</span>
+          </button>
           <button
             onClick={toggleTheme}
             className="p-1.5 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
             title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
-            {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
-          <span>CALIBRATED / ZHOUTINGRAN_ONLINE</span>
         </div>
 
         <button
