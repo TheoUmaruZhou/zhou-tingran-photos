@@ -33,6 +33,8 @@ export default function Lightbox({
   const [loadingLikes, setLoadingLikes] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -100,8 +102,7 @@ export default function Lightbox({
     });
   }, [photo.id]);
 
-  const handleDownload = useCallback(async () => {
-    setDownloading(true);
+  const generateWatermarkedImage = useCallback(async (): Promise<string | null> => {
     try {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -123,12 +124,12 @@ export default function Lightbox({
 
       const margin = size * 0.08;
       const maxImgW = size - margin * 2;
-      const maxImgH = size * 0.52;
+      const maxImgH = size * 1.5;
       const scale = Math.min(maxImgW / img.width, maxImgH / img.height);
       const drawW = img.width * scale;
       const drawH = img.height * scale;
       const imgX = (size - drawW) / 2;
-      const imgY = size * 0.06;
+      const imgY = size * 0.08;
 
       ctx.drawImage(img, imgX, imgY, drawW, drawH);
 
@@ -139,14 +140,14 @@ export default function Lightbox({
       let curY = bottomStart + bottomSpace * 0.12;
 
       ctx.fillStyle = '#1a1a1a';
-      ctx.font = `bold ${Math.round(size * 0.04)}px "Georgia", "Times New Roman", serif`;
+      ctx.font = `bold ${Math.round(size * 0.025)}px "Arial", "Helvetica", sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       ctx.fillText(photo.title.toUpperCase(), size / 2, curY);
-      curY += size * 0.065;
+      curY += size * 0.07;
 
       ctx.fillStyle = '#666666';
-      ctx.font = `italic ${Math.round(size * 0.02)}px "Georgia", "Times New Roman", serif`;
+      ctx.font = `${Math.round(size * 0.02)}px "Arial", "Helvetica", sans-serif`;
       ctx.fillText(`${photo.exif.camera}  ·  ${photo.exif.lens}  ·  ${photo.exif.exposure}  ·  ${photo.exif.focalLength}`, size / 2, curY);
       curY += size * 0.06;
 
@@ -160,23 +161,47 @@ export default function Lightbox({
       curY += size * 0.055;
 
       ctx.fillStyle = '#1a1a1a';
-      ctx.font = `600 ${Math.round(size * 0.026)}px "Georgia", "Times New Roman", serif`;
+      ctx.font = `600 ${Math.round(size * 0.018)}px "Arial", "Helvetica", sans-serif`;
       ctx.fillText('THEODORE PHOTOGRAPHY', size / 2, curY);
       curY += size * 0.05;
 
       ctx.fillStyle = '#999999';
-      ctx.font = `italic ${Math.round(size * 0.019)}px "Georgia", "Times New Roman", serif`;
+      ctx.font = `${Math.round(size * 0.019)}px "Arial", "Helvetica", sans-serif`;
       ctx.fillText("Curator's Edition · 2026", size / 2, curY);
 
-      const link = document.createElement('a');
-      link.download = `THEO_${photo.id.toUpperCase()}_WATERMARKED.jpg`;
-      link.href = canvas.toDataURL('image/jpeg', 0.95);
-      link.click();
+      return canvas.toDataURL('image/jpeg', 0.95);
     } catch {
+      return null;
+    }
+  }, [photo]);
+
+  const handleDownloadClick = useCallback(async () => {
+    setDownloading(true);
+    const url = await generateWatermarkedImage();
+    if (url) {
+      setPreviewUrl(url);
+      setPreviewOpen(true);
+    } else {
       window.open(photo.imageUrl, '_blank');
     }
     setDownloading(false);
-  }, [photo]);
+  }, [generateWatermarkedImage, photo.imageUrl]);
+
+  const handleConfirmDownload = useCallback(() => {
+    if (previewUrl) {
+      const link = document.createElement('a');
+      link.download = `THEO_${photo.id.toUpperCase()}_WATERMARKED.jpg`;
+      link.href = previewUrl;
+      link.click();
+    }
+    setPreviewOpen(false);
+    setPreviewUrl(null);
+  }, [previewUrl, photo.id]);
+
+  const handleCancelDownload = useCallback(() => {
+    setPreviewOpen(false);
+    setPreviewUrl(null);
+  }, []);
 
   useEffect(() => {
     onNextRef.current = onNext;
@@ -214,23 +239,29 @@ export default function Lightbox({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setAutoPlay(false);
-        stopAutoPlay();
-        onClose();
+        if (previewOpen) {
+          handleCancelDownload();
+        } else {
+          setAutoPlay(false);
+          stopAutoPlay();
+          onClose();
+        }
       }
-      if (e.key === 'ArrowRight') {
-        setAutoPlay(false);
-        stopAutoPlay();
-        onNext();
-      }
-      if (e.key === 'ArrowLeft') {
-        setAutoPlay(false);
-        stopAutoPlay();
-        onPrev();
-      }
-      if (e.key === ' ') {
-        e.preventDefault();
-        toggleAutoPlay();
+      if (!previewOpen) {
+        if (e.key === 'ArrowRight') {
+          setAutoPlay(false);
+          stopAutoPlay();
+          onNext();
+        }
+        if (e.key === 'ArrowLeft') {
+          setAutoPlay(false);
+          stopAutoPlay();
+          onPrev();
+        }
+        if (e.key === ' ') {
+          e.preventDefault();
+          toggleAutoPlay();
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -240,7 +271,7 @@ export default function Lightbox({
       window.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [onClose, onNext, onPrev, toggleAutoPlay, stopAutoPlay]);
+  }, [onClose, onNext, onPrev, toggleAutoPlay, stopAutoPlay, previewOpen, handleCancelDownload]);
 
   const currentIndex = filteredList.findIndex((p) => p.id === photo.id);
   const totalCount = filteredList.length;
@@ -329,10 +360,11 @@ export default function Lightbox({
 
             <motion.div
               key={photo.id}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.4 }}
+              layoutId={`photo-${photo.id}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
+              transition={{ layout: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }}
               className="max-w-full max-h-[75vh] lg:max-h-[82vh] relative"
             >
               <img
@@ -444,7 +476,7 @@ export default function Lightbox({
                   <span className={liked ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'}>{likes > 0 ? likes : 'LIKE'}</span>
                 </button>
                 <button
-                  onClick={handleDownload}
+                  onClick={handleDownloadClick}
                   disabled={downloading}
                   className="flex items-center gap-2 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer disabled:opacity-50"
                 >
@@ -462,6 +494,76 @@ export default function Lightbox({
             </div>
           </div>
         </div>
+
+        <AnimatePresence>
+          {previewOpen && previewUrl && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[60] bg-[#0a0a0a]/90 backdrop-blur-sm flex items-center justify-center p-4"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) handleCancelDownload();
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="bg-[#1a1a1a] border border-neutral-700 max-w-4xl w-full"
+              >
+                <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-700">
+                  <div className="flex items-center gap-3">
+                    <Download className="w-4 h-4 text-red-600" />
+                    <span className="font-mono text-xs text-neutral-400 uppercase tracking-wider">Download Preview</span>
+                  </div>
+                  <button
+                    onClick={handleCancelDownload}
+                    className="p-2 text-neutral-500 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="p-6">
+                  <div className="flex justify-center mb-6">
+                    <img
+                      src={previewUrl}
+                      alt="Watermarked Preview"
+                      className="max-w-full max-h-[60vh] object-contain shadow-xl"
+                    />
+                  </div>
+
+                  <div className="text-center mb-4">
+                    <p className="font-mono text-[10px] text-neutral-500 uppercase tracking-wider">
+                      {photo.title.toUpperCase()} · THEO_{photo.id.toUpperCase()}_WATERMARKED.jpg
+                    </p>
+                  </div>
+
+                  <div className="flex justify-center gap-4">
+                    <button
+                      onClick={handleCancelDownload}
+                      className="px-6 py-3 bg-neutral-800 text-neutral-400 font-mono text-xs uppercase tracking-wider hover:bg-neutral-700 hover:text-white transition-colors cursor-pointer border border-neutral-700"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleConfirmDownload}
+                      className="px-6 py-3 bg-red-600 text-white font-mono text-xs uppercase tracking-wider hover:bg-red-700 transition-colors cursor-pointer"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Download className="w-4 h-4" />
+                        Download
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </AnimatePresence>
   );

@@ -295,17 +295,22 @@ export default function GalleryGrid({
                     }}
                   />
                 )}
-                <img
-                  src={photo.imageUrl}
-                  alt={photo.title}
-                  loading="lazy"
-                  onLoad={() => handleImageLoad(photo.id)}
+                <motion.div
+                  layoutId={`photo-${photo.id}`}
                   className={`w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-1000 ease-out ${loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'}`}
                   style={{
                     aspectRatio: colsMode === 1 ? '16/9' : photo.aspectRatio === '1:1' ? '1/1' : photo.aspectRatio === '3:4' ? '3/4' : '4/3',
                   }}
-                  referrerPolicy="no-referrer"
-                />
+                >
+                  <img
+                    src={photo.imageUrl}
+                    alt={photo.title}
+                    loading="lazy"
+                    onLoad={() => handleImageLoad(photo.id)}
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </motion.div>
 
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a] dark:from-[#ebebeb] via-[#1a1a1a]/30 dark:via-[#ebebeb]/30 to-transparent p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end min-h-[50%]">
                   <span className="font-mono text-[10px] text-red-500 tracking-wider">
