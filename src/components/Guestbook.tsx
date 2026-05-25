@@ -1,12 +1,14 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Send, PenLine, Stamp } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface Message {
   id: string;
   name: string;
   content: string;
   date: string;
+  created_at?: string;
 }
 
 interface GuestbookProps {
@@ -20,13 +22,26 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
   const [content, setContent] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMessages = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('guestbook')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (!error && data) {
+      setMessages(data);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const stored = localStorage.getItem('guestbook_messages');
-    if (stored) {
-      setMessages(JSON.parse(stored));
+    if (isOpen) {
+      fetchMessages();
     }
-  }, []);
+  }, [isOpen]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -34,8 +49,7 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
 
     setSending(true);
 
-    const newMsg: Message = {
-      id: Date.now().toString(),
+    const newMsg = {
       name: name.trim(),
       content: content.trim(),
       date: new Date().toLocaleDateString('zh-CN', {
@@ -45,15 +59,20 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
       }),
     };
 
-    const updated = [newMsg, ...messages];
-    setMessages(updated);
-    localStorage.setItem('guestbook_messages', JSON.stringify(updated));
+    const { data, error } = await supabase
+      .from('guestbook')
+      .insert([newMsg])
+      .select();
+
+    if (!error && data) {
+      setMessages([data[0], ...messages]);
+      setSent(true);
+      setName('');
+      setContent('');
+      setTimeout(() => setSent(false), 2000);
+    }
 
     setSending(false);
-    setSent(true);
-    setName('');
-    setContent('');
-    setTimeout(() => setSent(false), 2000);
   };
 
   return (
@@ -177,7 +196,13 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
                     <span className="font-mono text-[10px] text-red-600">({messages.length})</span>
                   </div>
 
-                  {messages.length === 0 ? (
+                  {loading ? (
+                    <div className="text-center py-12">
+                      <p className="font-mono text-xs text-neutral-400 dark:text-neutral-500">
+                        Loading messages...
+                      </p>
+                    </div>
+                  ) : messages.length === 0 ? (
                     <div className="text-center py-12">
                       <p className="font-mono text-xs text-neutral-400 dark:text-neutral-500">
                         No messages yet. Be the first to write.

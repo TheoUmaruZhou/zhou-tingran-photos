@@ -7,6 +7,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronLeft, ChevronRight, Camera, Cpu, Compass, Settings, Calendar, Eye, Play, Pause, Share2, Check, Heart } from 'lucide-react';
 import { Photograph } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface LightboxProps {
   photo: Photograph;
@@ -27,35 +28,56 @@ export default function Lightbox({
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const onNextRef = useRef(onNext);
   const [copied, setCopied] = useState(false);
+  const [likes, setLikes] = useState(0);
+  const [liked, setLiked] = useState(() => localStorage.getItem(`liked_${photo.id}`) === 'true');
+  const [loadingLikes, setLoadingLikes] = useState(true);
 
-  const getLikesKey = (id: string) => `likes_${id}`;
-  const getLikedKey = (id: string) => `liked_${id}`;
-
-  const [likes, setLikes] = useState(() => {
-    return parseInt(localStorage.getItem(getLikesKey(photo.id)) || '0', 10);
-  });
-  const [liked, setLiked] = useState(() => {
-    return localStorage.getItem(getLikedKey(photo.id)) === 'true';
-  });
+  const fetchLikes = async (photoId: string) => {
+    setLoadingLikes(true);
+    const { data, error } = await supabase
+      .from('likes')
+      .select('count')
+      .eq('photo_id', photoId)
+      .single();
+    
+    if (!error && data) {
+      setLikes(data.count);
+    } else if (error?.code === 'PGRST116') {
+      const { data: newData } = await supabase
+        .from('likes')
+        .insert([{ photo_id: photoId, count: 0 }])
+        .select();
+      if (newData) {
+        setLikes(0);
+      }
+    }
+    setLoadingLikes(false);
+  };
 
   useEffect(() => {
-    setLikes(parseInt(localStorage.getItem(getLikesKey(photo.id)) || '0', 10));
-    setLiked(localStorage.getItem(getLikedKey(photo.id)) === 'true');
+    fetchLikes(photo.id);
+    setLiked(localStorage.getItem(`liked_${photo.id}`) === 'true');
   }, [photo.id]);
 
-  const handleLike = useCallback(() => {
+  const handleLike = useCallback(async () => {
     if (liked) {
-      const newLikes = Math.max(0, likes - 1);
-      setLikes(newLikes);
+      const newCount = Math.max(0, likes - 1);
+      setLikes(newCount);
       setLiked(false);
-      localStorage.setItem(getLikesKey(photo.id), String(newLikes));
-      localStorage.setItem(getLikedKey(photo.id), 'false');
+      localStorage.setItem(`liked_${photo.id}`, 'false');
+      await supabase
+        .from('likes')
+        .update({ count: newCount })
+        .eq('photo_id', photo.id);
     } else {
-      const newLikes = likes + 1;
-      setLikes(newLikes);
+      const newCount = likes + 1;
+      setLikes(newCount);
       setLiked(true);
-      localStorage.setItem(getLikesKey(photo.id), String(newLikes));
-      localStorage.setItem(getLikedKey(photo.id), 'true');
+      localStorage.setItem(`liked_${photo.id}`, 'true');
+      await supabase
+        .from('likes')
+        .update({ count: newCount })
+        .eq('photo_id', photo.id);
     }
   }, [liked, likes, photo.id]);
 
@@ -311,7 +333,8 @@ export default function Lightbox({
                 </button>
                 <button
                   onClick={handleLike}
-                  className="flex items-center gap-2 font-mono text-[10px] transition-colors cursor-pointer"
+                  disabled={loadingLikes}
+                  className="flex items-center gap-2 font-mono text-[10px] transition-colors cursor-pointer disabled:opacity-50"
                   style={{ color: liked ? '#ef4444' : undefined }}
                 >
                   <Heart className={`w-5 h-5 transition-transform duration-200 ${liked ? 'scale-110' : ''}`} fill={liked ? '#ef4444' : 'none'} />
