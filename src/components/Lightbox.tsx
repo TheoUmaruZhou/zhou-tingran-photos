@@ -112,39 +112,58 @@ export default function Lightbox({
         img.src = photo.imageUrl;
       });
 
-      const borderSize = 80;
+      const size = Math.max(img.width, img.height) + 400;
       const canvas = document.createElement('canvas');
-      canvas.width = img.width + borderSize * 2;
-      canvas.height = img.height + borderSize * 2;
+      canvas.width = size;
+      canvas.height = size;
       const ctx = canvas.getContext('2d')!;
 
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, size, size);
 
-      ctx.drawImage(img, borderSize, borderSize);
+      const margin = 120;
+      const maxImgW = size - margin * 2;
+      const maxImgH = size * 0.58;
+      const scale = Math.min(maxImgW / img.width, maxImgH / img.height);
+      const drawW = img.width * scale;
+      const drawH = img.height * scale;
+      const imgX = (size - drawW) / 2;
+      const imgY = 100;
 
-      ctx.strokeStyle = '#e0e0e0';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(borderSize - 1, borderSize - 1, img.width + 2, img.height + 2);
+      ctx.drawImage(img, imgX, imgY, drawW, drawH);
+
+      let curY = imgY + drawH + 60;
 
       ctx.fillStyle = '#1a1a1a';
-      ctx.font = `bold ${Math.max(14, Math.floor(borderSize * 0.22))}px monospace`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('THEO UMARU ZHOU', borderSize, canvas.height - borderSize / 2);
+      ctx.font = `bold 36px "Georgia", "Times New Roman", serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(photo.title.toUpperCase(), size / 2, curY);
+      curY += 52;
 
-      ctx.font = `${Math.max(10, Math.floor(borderSize * 0.16))}px monospace`;
+      ctx.fillStyle = '#666666';
+      ctx.font = `italic 18px "Georgia", "Times New Roman", serif`;
+      ctx.fillText(`${photo.exif.camera}  ·  ${photo.exif.lens}  ·  ${photo.exif.exposure}  ·  ${photo.exif.focalLength}`, size / 2, curY);
+      curY += 40;
+
+      ctx.strokeStyle = '#cccccc';
+      ctx.lineWidth = 1;
+      const lineW = 80;
+      ctx.beginPath();
+      ctx.moveTo(size / 2 - lineW, curY);
+      ctx.lineTo(size / 2 + lineW, curY);
+      ctx.stroke();
+      curY += 36;
+
+      ctx.fillStyle = '#1a1a1a';
+      ctx.font = `600 22px "Georgia", "Times New Roman", serif`;
+      ctx.letterSpacing = '4px';
+      ctx.fillText('THEODORE PHOTOGRAPHY', size / 2, curY);
+      curY += 38;
+
       ctx.fillStyle = '#999999';
-      ctx.fillText(`© ${photo.year} ALL RIGHTS RESERVED`, borderSize, canvas.height - borderSize / 2 + Math.max(16, borderSize * 0.28));
-
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#cc0000';
-      ctx.font = `bold ${Math.max(12, Math.floor(borderSize * 0.18))}px monospace`;
-      ctx.fillText(photo.id.toUpperCase(), canvas.width - borderSize, canvas.height - borderSize / 2);
-
-      ctx.fillStyle = '#999999';
-      ctx.font = `${Math.max(10, Math.floor(borderSize * 0.15))}px monospace`;
-      ctx.fillText(`${photo.location}`, canvas.width - borderSize, canvas.height - borderSize / 2 + Math.max(16, borderSize * 0.28));
+      ctx.font = `italic 16px "Georgia", "Times New Roman", serif`;
+      ctx.fillText("Curator's Edition · 2026", size / 2, curY);
 
       const link = document.createElement('a');
       link.download = `THEO_${photo.id.toUpperCase()}_WATERMARKED.jpg`;
