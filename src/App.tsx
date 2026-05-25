@@ -144,6 +144,7 @@ export default function App() {
                 onNavigateToCategory={handleSelectCategoryFromHome}
                 onNavigateToProject={handleSelectProjectFromHome}
                 onExploreAll={handleExploreAllFromHome}
+                startTyping={splashDone}
               />
             </motion.div>
           )}

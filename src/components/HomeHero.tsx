@@ -12,12 +12,14 @@ interface HomeHeroProps {
   onNavigateToCategory: (category: Category) => void;
   onNavigateToProject: (project: Project) => void;
   onExploreAll: () => void;
+  startTyping?: boolean;
 }
 
 export default function HomeHero({
   onNavigateToCategory,
   onNavigateToProject,
   onExploreAll,
+  startTyping = true,
 }: HomeHeroProps) {
   const featuredRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -31,6 +33,7 @@ export default function HomeHero({
   const [typingDone, setTypingDone] = useState(false);
 
   useEffect(() => {
+    if (!startTyping) return;
     let i = 0;
     const timer = setInterval(() => {
       if (i < fullText.length) {
@@ -42,7 +45,7 @@ export default function HomeHero({
       }
     }, 80);
     return () => clearInterval(timer);
-  }, []);
+  }, [startTyping]);
 
   const customRows = [
     {
