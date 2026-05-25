@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Navbar from './components/Navbar';
 import HomeHero from './components/HomeHero';
@@ -13,6 +13,7 @@ import AboutContact from './components/AboutContact';
 import CustomCursor from './components/CustomCursor';
 import MobileBottomNav from './components/MobileBottomNav';
 import Guestbook from './components/Guestbook';
+import SplashScreen from './components/SplashScreen';
 import { Category, Project, Photograph } from './types';
 import { ArrowUp } from 'lucide-react';
 import { PHOTOGRAPHS } from './data';
@@ -26,6 +27,12 @@ export default function App() {
   const [activePhotoList, setActivePhotoList] = useState<Photograph[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [guestbookOpen, setGuestbookOpen] = useState(false);
+  const [splashDone, setSplashDone] = useState(() => sessionStorage.getItem('splash_shown') === 'true');
+
+  const handleSplashComplete = useCallback(() => {
+    setSplashDone(true);
+    sessionStorage.setItem('splash_shown', 'true');
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -107,6 +114,7 @@ export default function App() {
 
   return (
     <div id="app-root-wrapper" className="min-h-screen bg-[#ebebeb] dark:bg-[#1a1a1a] text-[#1a1a1a] dark:text-[#ebebeb] font-sans flex flex-col justify-start transition-colors duration-300">
+      {!splashDone && <SplashScreen onComplete={handleSplashComplete} />}
       <CustomCursor />
       <Navbar
         activeTab={activeTab}
