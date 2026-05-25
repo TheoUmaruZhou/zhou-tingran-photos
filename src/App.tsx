@@ -190,7 +190,7 @@ export default function App() {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-8 right-8 z-40 w-12 h-12 bg-[#1a1a1a] dark:bg-[#ebebeb] text-[#ebebeb] dark:text-[#1a1a1a] flex items-center justify-center hover:bg-neutral-700 dark:hover:bg-neutral-300 transition-colors shadow-lg cursor-pointer"
+            className="fixed bottom-24 right-8 lg:bottom-8 z-40 w-12 h-12 bg-[#1a1a1a] dark:bg-[#ebebeb] text-[#ebebeb] dark:text-[#1a1a1a] flex items-center justify-center hover:bg-neutral-700 dark:hover:bg-neutral-300 transition-colors shadow-lg cursor-pointer"
           >
             <ArrowUp className="w-5 h-5" />
           </motion.button>
