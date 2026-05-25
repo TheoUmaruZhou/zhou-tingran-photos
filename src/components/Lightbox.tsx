@@ -112,7 +112,7 @@ export default function Lightbox({
         img.src = photo.imageUrl;
       });
 
-      const size = Math.max(img.width, img.height) + 400;
+      const size = Math.max(img.width, img.height) + 600;
       const canvas = document.createElement('canvas');
       canvas.width = size;
       canvas.height = size;
@@ -121,48 +121,51 @@ export default function Lightbox({
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, size, size);
 
-      const margin = 120;
+      const margin = size * 0.08;
       const maxImgW = size - margin * 2;
-      const maxImgH = size * 0.58;
+      const maxImgH = size * 0.52;
       const scale = Math.min(maxImgW / img.width, maxImgH / img.height);
       const drawW = img.width * scale;
       const drawH = img.height * scale;
       const imgX = (size - drawW) / 2;
-      const imgY = 100;
+      const imgY = size * 0.06;
 
       ctx.drawImage(img, imgX, imgY, drawW, drawH);
 
-      let curY = imgY + drawH + 60;
+      const bottomStart = imgY + drawH;
+      const bottomEnd = size - size * 0.04;
+      const bottomSpace = bottomEnd - bottomStart;
+
+      let curY = bottomStart + bottomSpace * 0.12;
 
       ctx.fillStyle = '#1a1a1a';
-      ctx.font = `bold 36px "Georgia", "Times New Roman", serif`;
+      ctx.font = `bold ${Math.round(size * 0.04)}px "Georgia", "Times New Roman", serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       ctx.fillText(photo.title.toUpperCase(), size / 2, curY);
-      curY += 52;
+      curY += size * 0.065;
 
       ctx.fillStyle = '#666666';
-      ctx.font = `italic 18px "Georgia", "Times New Roman", serif`;
+      ctx.font = `italic ${Math.round(size * 0.02)}px "Georgia", "Times New Roman", serif`;
       ctx.fillText(`${photo.exif.camera}  ·  ${photo.exif.lens}  ·  ${photo.exif.exposure}  ·  ${photo.exif.focalLength}`, size / 2, curY);
-      curY += 40;
+      curY += size * 0.06;
 
       ctx.strokeStyle = '#cccccc';
       ctx.lineWidth = 1;
-      const lineW = 80;
+      const lineW = size * 0.08;
       ctx.beginPath();
       ctx.moveTo(size / 2 - lineW, curY);
       ctx.lineTo(size / 2 + lineW, curY);
       ctx.stroke();
-      curY += 36;
+      curY += size * 0.055;
 
       ctx.fillStyle = '#1a1a1a';
-      ctx.font = `600 22px "Georgia", "Times New Roman", serif`;
-      ctx.letterSpacing = '4px';
+      ctx.font = `600 ${Math.round(size * 0.026)}px "Georgia", "Times New Roman", serif`;
       ctx.fillText('THEODORE PHOTOGRAPHY', size / 2, curY);
-      curY += 38;
+      curY += size * 0.05;
 
       ctx.fillStyle = '#999999';
-      ctx.font = `italic 16px "Georgia", "Times New Roman", serif`;
+      ctx.font = `italic ${Math.round(size * 0.019)}px "Georgia", "Times New Roman", serif`;
       ctx.fillText("Curator's Edition · 2026", size / 2, curY);
 
       const link = document.createElement('a');
