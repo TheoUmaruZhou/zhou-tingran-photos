@@ -31,6 +31,16 @@ export default function Lightbox({
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(() => localStorage.getItem(`liked_${photo.id}`) === 'true');
   const [loadingLikes, setLoadingLikes] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const fetchLikes = async (photoId: string) => {
     setLoadingLikes(true);
@@ -208,13 +218,35 @@ export default function Lightbox({
 
         <div className="flex-1 w-full max-w-8xl mx-auto flex flex-col lg:flex-row items-stretch select-none">
           <div className="flex-1 relative bg-neutral-300 flex items-center justify-center p-4 md:p-8 min-h-[50vh] lg:min-h-0">
-            <button
-              onClick={onPrev}
-              title="Prev [Left Arrow]"
-              className="absolute left-4 p-4 text-white/70 hover:text-white hover:scale-110 transition-all z-20 cursor-pointer rounded-none duration-300"
-            >
-              <ChevronLeft className="w-8 h-8" />
-            </button>
+            {isMobile ? (
+              <>
+                <div
+                  onClick={onPrev}
+                  className="absolute left-0 top-0 bottom-0 w-1/3 z-20 cursor-pointer"
+                />
+                <div
+                  onClick={onNext}
+                  className="absolute right-0 top-0 bottom-0 w-1/3 z-20 cursor-pointer"
+                />
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={onPrev}
+                  title="Prev [Left Arrow]"
+                  className="absolute left-4 p-4 text-white/70 hover:text-white hover:scale-110 transition-all z-20 cursor-pointer rounded-none duration-300"
+                >
+                  <ChevronLeft className="w-8 h-8" />
+                </button>
+                <button
+                  onClick={onNext}
+                  title="Next [Right Arrow]"
+                  className="absolute right-4 p-4 text-white/70 hover:text-white hover:scale-110 transition-all z-20 cursor-pointer rounded-none duration-300"
+                >
+                  <ChevronRight className="w-8 h-8" />
+                </button>
+              </>
+            )}
 
             <motion.div
               key={photo.id}
@@ -231,14 +263,6 @@ export default function Lightbox({
                 referrerPolicy="no-referrer"
               />
             </motion.div>
-
-            <button
-              onClick={onNext}
-              title="Next [Right Arrow]"
-              className="absolute right-4 p-4 text-white/70 hover:text-white hover:scale-110 transition-all z-20 cursor-pointer rounded-none duration-300"
-            >
-              <ChevronRight className="w-8 h-8" />
-            </button>
           </div>
 
           <div className="w-full lg:w-[420px] bg-[#e0e0e0] dark:bg-[#2a2a2a] lg:border-l border-neutral-300 dark:border-neutral-700 p-8 flex flex-col justify-between overflow-y-auto shrink-0 border-t border-neutral-300 dark:border-neutral-700 lg:border-t-0">
