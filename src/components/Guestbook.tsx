@@ -191,9 +191,9 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
             {sent && (
               <motion.div
                 initial={{ opacity: 1, y: 0, scale: 1 }}
-                animate={{ opacity: 0, y: -200, scale: 0.5 }}
+                animate={{ opacity: 0, y: -500, scale: 0.3 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 2, ease: [0.25, 0.1, 0.25, 1] }}
                 className="fixed left-1/2 -translate-x-1/2 bottom-32 z-50 pointer-events-none"
               >
                 <div className="w-24 h-16 bg-[#f5f0e8] dark:bg-[#2a2520] border border-neutral-300 dark:border-neutral-600 shadow-xl flex items-center justify-center">
@@ -203,29 +203,34 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
             )}
           </AnimatePresence>
 
-          <div className="shrink-0 border-t border-neutral-200 dark:border-neutral-600 bg-[#f5f0e8] dark:bg-[#2a2520] px-4 md:px-8 py-4 transition-colors duration-300">
+          <div className="shrink-0 border-t border-neutral-200 dark:border-neutral-600 bg-[#f5f0e8] dark:bg-[#2a2520] px-6 md:px-12 py-6 transition-colors duration-300">
             <form onSubmit={handleSubmit} className="max-w-5xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your Name / 你的名字"
-                  className="sm:w-40 bg-transparent border-b border-neutral-300 dark:border-neutral-600 focus:border-red-600 outline-none py-2 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 transition-colors shrink-0"
+                  className="sm:w-48 bg-transparent border-b border-neutral-300 dark:border-neutral-600 focus:border-red-600 outline-none py-3 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 transition-colors shrink-0"
                   required
                 />
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Write something here..."
-                  rows={1}
-                  className="flex-1 bg-transparent border-b border-neutral-300 dark:border-neutral-600 focus:border-red-600 outline-none py-2 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 resize-none transition-colors"
+                  rows={2}
+                  className="flex-1 bg-transparent border border-neutral-200 dark:border-neutral-600 focus:border-red-600 outline-none p-3 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 resize-none transition-colors leading-relaxed"
+                  style={{
+                    backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(0,0,0,0.05) 28px)',
+                    backgroundAttachment: 'local',
+                    lineHeight: '28px',
+                  }}
                   required
                 />
                 <button
                   type="submit"
                   disabled={sending || !name.trim() || !content.trim()}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-[#1a1a1a] dark:bg-[#ebebeb] text-[#ebebeb] dark:text-[#1a1a1a] font-mono text-xs uppercase tracking-wider hover:bg-neutral-700 dark:hover:bg-neutral-300 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-[#1a1a1a] dark:bg-[#ebebeb] text-[#ebebeb] dark:text-[#1a1a1a] font-mono text-xs uppercase tracking-wider hover:bg-neutral-700 dark:hover:bg-neutral-300 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
                 >
                   {sent ? (
                     <>
