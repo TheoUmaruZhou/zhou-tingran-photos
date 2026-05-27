@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo, useCallback, useRef, type ReactNode } from 'react';
+import { useState, useMemo, useRef, type ReactNode } from 'react';
 import { motion, useInView } from 'motion/react';
-import { LayoutGrid, Grid3X3, StretchHorizontal, SlidersHorizontal, MapPin, Calendar, Info } from 'lucide-react';
+import { LayoutGrid, Grid3X3, StretchHorizontal, SlidersHorizontal, MapPin, Calendar, Info, ChevronDown } from 'lucide-react';
 import { Category, Project, Photograph } from '../types';
 import { CATEGORIES_INFO, PROJECTS_INFO, PHOTOGRAPHS } from '../data';
 import AnimatedCounter from './AnimatedCounter';
@@ -47,11 +47,9 @@ export default function GalleryGrid({
   const [colsMode, setColsMode] = useState<1 | 2 | 3>(3);
 
   const [showTechnicalStats, setShowTechnicalStats] = useState<boolean>(false);
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-
-  const handleImageLoad = useCallback((id: string) => {
-    setLoadedImages((prev) => new Set(prev).add(id));
-  }, []);
+  
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 30;
 
   useMemo(() => {
     if (initialCategory !== null || initialProject !== null) {
@@ -63,6 +61,7 @@ export default function GalleryGrid({
   const handleResetFilters = () => {
     setSelectedCategory(null);
     setSelectedProject(null);
+    setPage(1);
   };
 
   const filteredPhotographs = useMemo(() => {
@@ -71,11 +70,17 @@ export default function GalleryGrid({
         return p.project === selectedProject;
       }
       if (selectedCategory) {
-        return p.category === selectedCategory;
+        return p.category === selectedCategory && !p.project;
       }
-      return true;
+      return !p.project;
     });
   }, [selectedCategory, selectedProject]);
+
+  const visiblePhotographs = useMemo(() => {
+    return filteredPhotographs.slice(0, page * itemsPerPage);
+  }, [filteredPhotographs, page]);
+
+  const hasMore = filteredPhotographs.length > page * itemsPerPage;
 
   const headerDetails = useMemo(() => {
     if (selectedProject) {
@@ -93,7 +98,7 @@ export default function GalleryGrid({
       return {
         title: info.nameZh,
         subtitle: info.nameEn,
-        intro: info.intro,
+        intro: info.desc,
         extra: '',
         meta: '作品档案 / WORKS GENRE CLASSIFICATION',
       };
@@ -147,7 +152,8 @@ export default function GalleryGrid({
           <div className="lg:col-span-4 lg:text-right flex flex-col gap-4 justify-end lg:h-full lg:pt-8">
             <div className="font-mono text-xs text-neutral-500 dark:text-neutral-400 uppercase">
               CHAMBER STATUS: CALIBRATED <br />
-              ARCHIVE CODES: {filteredPhotographs.length} CAPTURES FOUND
+              ARCHIVE CODES: {filteredPhotographs.length} CAPTURES FOUND<br />
+              {hasMore && <span className="text-red-600">LOADING: {visiblePhotographs.length} / {filteredPhotographs.length}</span>}
             </div>
             {selectedCategory || selectedProject ? (
               <button
@@ -179,6 +185,7 @@ export default function GalleryGrid({
                 onClick={() => {
                   setSelectedCategory(cat);
                   setSelectedProject(null);
+                  setPage(1);
                 }}
                 className={`font-mono text-xs px-3 py-1.5 transition-all cursor-pointer ${
                   active
@@ -202,6 +209,7 @@ export default function GalleryGrid({
                 onClick={() => {
                   setSelectedProject(proj);
                   setSelectedCategory(null);
+                  setPage(1);
                 }}
                 className={`font-mono text-xs px-3 py-1.5 transition-all cursor-pointer ${
                   active
@@ -269,113 +277,119 @@ export default function GalleryGrid({
           </button>
         </div>
       ) : (
-        <div
-          id="photography-images-grid"
-          className={`grid gap-x-6 gap-y-12 transition-all duration-300 ${
-            colsMode === 3
-              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-              : colsMode === 2
-              ? 'grid-cols-1 md:grid-cols-2'
-              : 'grid-cols-1 max-w-4xl mx-auto'
-          }`}
-        >
-          {filteredPhotographs.map((photo, index) => (
-            <ScrollRevealItem key={photo.id} index={index}>
-              <div
-                onClick={() => onPhotoClick(photo, filteredPhotographs)}
-                className="group cursor-pointer flex flex-col justify-start relative select-none"
-                data-cursor-enlarge
-              >
-              <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto">
-                {!loadedImages.has(photo.id) && (
-                  <div
-                    className="absolute inset-0 skeleton-shimmer"
-                    style={{
-                      aspectRatio: colsMode === 1 ? '16/9' : photo.aspectRatio === '1:1' ? '1/1' : photo.aspectRatio === '3:4' ? '3/4' : '4/3',
-                    }}
-                  />
-                )}
-                <motion.div
-                  layoutId={`photo-${photo.id}`}
-                  className={`w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-1000 ease-out ${loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'}`}
-                  style={{
-                    aspectRatio: colsMode === 1 ? '16/9' : photo.aspectRatio === '1:1' ? '1/1' : photo.aspectRatio === '3:4' ? '3/4' : '4/3',
-                  }}
+        <>
+          <div
+            id="photography-images-grid"
+            className={`grid gap-x-6 gap-y-12 transition-all duration-300 ${
+              colsMode === 3
+                ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                : colsMode === 2
+                ? 'grid-cols-1 md:grid-cols-2'
+                : 'grid-cols-1 max-w-4xl mx-auto'
+            }`}
+          >
+            {visiblePhotographs.map((photo, index) => (
+              <ScrollRevealItem key={photo.id} index={index}>
+                <div
+                  onClick={() => onPhotoClick(photo, filteredPhotographs)}
+                  className="group cursor-pointer flex flex-col justify-start relative select-none"
+                  data-cursor-enlarge
                 >
-                  <img
-                    src={photo.imageUrl}
-                    alt={photo.title}
-                    loading="lazy"
-                    onLoad={() => handleImageLoad(photo.id)}
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </motion.div>
+                  <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto">
+                    <motion.div
+                      layoutId={`photo-${photo.id}`}
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-all duration-1000 ease-out"
+                      style={{
+                        aspectRatio: colsMode === 1 ? '16/9' : photo.aspectRatio === '1:1' ? '1/1' : photo.aspectRatio === '3:4' ? '3/4' : '4/3',
+                      }}
+                    >
+                      <img
+                        src={photo.imageUrl}
+                        alt={photo.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                        referrerPolicy="no-referrer"
+                      />
+                    </motion.div>
 
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a] dark:from-[#ebebeb] via-[#1a1a1a]/30 dark:via-[#ebebeb]/30 to-transparent p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end min-h-[50%]">
-                  <span className="font-mono text-[10px] text-red-500 tracking-wider">
-                    {photo.exif.format}
-                  </span>
-                  <h4 className="text-lg font-display font-black text-white uppercase mt-0.5 tracking-tight">
-                    {photo.title}
-                  </h4>
-                  <p className="text-xs text-neutral-300 font-sans mt-1 line-clamp-1">
-                    {photo.desc}
-                  </p>
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a] dark:from-[#ebebeb] via-[#1a1a1a]/30 dark:via-[#ebebeb]/30 to-transparent p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end min-h-[50%]">
+                      <span className="font-mono text-[10px] text-red-500 tracking-wider">
+                        {photo.exif.format}
+                      </span>
+                      <h4 className="text-lg font-display font-black text-white uppercase mt-0.5 tracking-tight">
+                        {photo.title}
+                      </h4>
+                      <p className="text-xs text-neutral-300 font-sans mt-1 line-clamp-1">
+                        {photo.desc}
+                      </p>
 
-                  <div className="flex items-center gap-4 mt-3 pt-3 border-t border-neutral-600 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
-                      {photo.location}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
-                      {photo.year}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="absolute top-3 right-3 font-mono text-[9px] bg-[#1a1a1a]/75 dark:bg-[#ebebeb]/75 backdrop-blur px-2 py-1 text-neutral-400 dark:text-neutral-500 opacity-60 group-hover:opacity-100 transition-opacity">
-                  {photo.exif.camera.split(' ')[0]} • {photo.exif.focalLength}
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-col justify-start px-1">
-                <div className="flex justify-between items-baseline">
-                  <h5 className="font-display font-extrabold text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] group-hover:translate-x-1 transition-transform duration-300 uppercase tracking-tight text-sm">
-                    {photo.title}
-                  </h5>
-                  <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
-                    [{photo.year}]
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-3 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 mt-1">
-                  <span className="text-neutral-400 dark:text-neutral-500">Location:</span>
-                  <span className="truncate">{photo.location}</span>
-                </div>
-
-                {showTechnicalStats && (
-                  <div className="mt-3 bg-[#e0e0e0] dark:bg-[#2a2a2a] p-3 text-[10px] font-mono border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 flex flex-col gap-1">
-                    <div className="flex justify-between">
-                      <span className="text-neutral-400 dark:text-neutral-500">BODY:</span>
-                      <span>{photo.exif.camera}</span>
+                      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-neutral-600 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
+                          {photo.location}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
+                          {photo.year}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-neutral-400 dark:text-neutral-500">GLASS:</span>
-                      <span>{photo.exif.lens}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-neutral-400 dark:text-neutral-500">SPECS:</span>
-                      <span>{photo.exif.exposure}</span>
+
+                    <div className="absolute top-3 right-3 font-mono text-[9px] bg-[#1a1a1a]/75 dark:bg-[#ebebeb]/75 backdrop-blur px-2 py-1 text-neutral-400 dark:text-neutral-500 opacity-60 group-hover:opacity-100 transition-opacity">
+                      {photo.exif.camera.split(' ')[0]} • {photo.exif.focalLength}
                     </div>
                   </div>
-                )}
-              </div>
+
+                  <div className="mt-4 flex flex-col justify-start px-1">
+                    <div className="flex justify-between items-baseline">
+                      <h5 className="font-display font-extrabold text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] group-hover:translate-x-1 transition-transform duration-300 uppercase tracking-tight text-sm">
+                        {photo.title}
+                      </h5>
+                      <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
+                        [{photo.year}]
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 mt-1">
+                      <span className="text-neutral-400 dark:text-neutral-500">Location:</span>
+                      <span className="truncate">{photo.location}</span>
+                    </div>
+
+                    {showTechnicalStats && (
+                      <div className="mt-3 bg-[#e0e0e0] dark:bg-[#2a2a2a] p-3 text-[10px] font-mono border border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 flex flex-col gap-1">
+                        <div className="flex justify-between">
+                          <span className="text-neutral-400 dark:text-neutral-500">BODY:</span>
+                          <span>{photo.exif.camera}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-neutral-400 dark:text-neutral-500">GLASS:</span>
+                          <span>{photo.exif.lens}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-neutral-400 dark:text-neutral-500">SPECS:</span>
+                          <span>{photo.exif.exposure}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </ScrollRevealItem>
+            ))}
+          </div>
+
+          {hasMore && (
+            <div className="w-full flex justify-center mt-12">
+              <button
+                onClick={() => setPage(page + 1)}
+                className="flex items-center gap-2 font-mono text-xs px-6 py-3 bg-[#1a1a1a] dark:bg-[#ebebeb] text-[#ebebeb] dark:text-[#1a1a1a] hover:bg-neutral-700 dark:hover:bg-neutral-300 transition-colors cursor-pointer"
+              >
+                <span>加载更多 / LOAD MORE</span>
+                <ChevronDown className="w-4 h-4" />
+                <span className="text-neutral-400">({filteredPhotographs.length - visiblePhotographs.length} remaining)</span>
+              </button>
             </div>
-            </ScrollRevealItem>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );
