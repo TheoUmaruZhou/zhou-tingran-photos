@@ -107,12 +107,25 @@ export default function Lightbox({
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.referrerPolicy = 'no-referrer';
+      
       const imageSrc = photo.originalJpgUrl || photo.imageUrl;
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error('Failed to load image'));
-        img.src = imageSrc;
-      });
+      
+      const tryLoadImage = async (src: string): Promise<boolean> => {
+        return new Promise((resolve) => {
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          img.src = src;
+        });
+      };
+      
+      let loaded = await tryLoadImage(imageSrc);
+      if (!loaded && photo.originalJpgUrl) {
+        loaded = await tryLoadImage(photo.imageUrl);
+      }
+      
+      if (!loaded) {
+        return null;
+      }
 
       const size = Math.max(img.width, img.height) + 600;
       const canvas = document.createElement('canvas');
