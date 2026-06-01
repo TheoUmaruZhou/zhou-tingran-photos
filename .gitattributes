@@ -1,0 +1,4 @@
+public/images/摄影图片总集/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/images/摄影图片总集/*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
