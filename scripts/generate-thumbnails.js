@@ -15,9 +15,11 @@ const FOLDERS = [
   '纪实摄影',
   '创意摄影',
   '新地形摄影',
+  '静物摄影',
   '专题-老乡镇',
   '专题-新农村',
   '专题-城市边缘发展',
+  '专题-途观',
 ];
 
 async function generateThumbnail(inputPath, outputPath) {

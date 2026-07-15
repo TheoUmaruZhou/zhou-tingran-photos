@@ -44,7 +44,7 @@ export default function GalleryGrid({
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(initialCategory);
   const [selectedProject, setSelectedProject] = useState<Project | null>(initialProject);
 
-  const [colsMode, setColsMode] = useState<1 | 2 | 3>(2);
+  const [colsMode, setColsMode] = useState<1 | 2 | 3>(3);
 
   const [showTechnicalStats, setShowTechnicalStats] = useState<boolean>(false);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());

@@ -8,12 +8,14 @@ export enum Category {
   Documentary = 'documentary',
   Creative = 'creative',
   NewTopographics = 'new-topographics',
+  StillLife = 'still-life',
 }
 
 export enum Project {
   OldTowns = 'old-towns',
   NewVillages = 'new-villages',
   UrbanBorders = 'urban-borders',
+  TuGuan = 'tu-guan',
 }
 
 export interface ExifData {

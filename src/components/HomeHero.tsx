@@ -71,6 +71,13 @@ export default function HomeHero({
     },
     {
       index: '04',
+      title: 'STILL LIFE',
+      subtitle: '静物摄影',
+      desc: 'Arranged objects, light and form.',
+      category: Category.StillLife,
+    },
+    {
+      index: '05',
       title: 'CREATIVE EXPERIMENTAL',
       subtitle: '创意重构',
       desc: 'Abstract shadows, inverted liquid horizons.',
@@ -84,21 +91,28 @@ export default function HomeHero({
       num: 'P.01',
       name: '老乡镇 / Old Towns',
       time: '2021 – 2024',
-      image: '/images/ZTR00304.webp',
+      image: '/images/专题-老乡镇/门.webp',
     },
     {
       id: Project.NewVillages,
       num: 'P.02',
       name: '新农村 / Modern Countryside',
       time: '2023 – 2026',
-      image: '/images/ZTR00344-4.webp',
+      image: '/images/专题-新农村/镜.webp',
     },
     {
       id: Project.UrbanBorders,
       num: 'P.03',
       name: '城市边缘发展 / Urban Edges',
       time: '2022 – 2026',
-      image: '/images/ZTR00350.webp',
+      image: '/images/专题-城市边缘发展/通道.webp',
+    },
+    {
+      id: Project.TuGuan,
+      num: 'P.04',
+      name: '专题-途观 / Tu Guan',
+      time: '2023 – 2026',
+      image: '/images/专题-途观/下乡.webp',
     },
   ];
 
@@ -249,7 +263,7 @@ export default function HomeHero({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {ongoingProjects.map((proj) => (
               <div
                 key={proj.id}

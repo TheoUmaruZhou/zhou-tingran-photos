@@ -14,12 +14,14 @@ const CATEGORY_MAP = {
   '纪实摄影': 'documentary',
   '创意摄影': 'creative',
   '新地形摄影': 'new-topographics',
+  '静物摄影': 'still-life',
 };
 
 const PROJECT_MAP = {
   '专题-老乡镇': 'old-towns',
   '专题-新农村': 'new-villages',
   '专题-城市边缘发展': 'urban-borders',
+  '专题-途观': 'tu-guan',
 };
 
 const DEFAULT_EXIF = {

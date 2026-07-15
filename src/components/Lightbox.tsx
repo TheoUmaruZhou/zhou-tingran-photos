@@ -399,7 +399,7 @@ export default function Lightbox({
             <div>
               <div className="flex justify-between items-center mb-6 font-mono text-xs">
                 <span className="text-red-600 tracking-wider font-semibold uppercase">
-                  {photo.category.replace('-', ' ')}
+                  {photo.category ? photo.category.replace('-', ' ') : (photo.project ? 'PROJECT' : 'ARCHIVE')}
                 </span>
                 <span className="text-neutral-400 dark:text-neutral-500 bg-neutral-200 dark:bg-neutral-800 px-2 py-1">
                   ID: {photo.id.toUpperCase()}
