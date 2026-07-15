@@ -66,6 +66,20 @@ export default function AboutContact() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         <div className="lg:col-span-7 flex flex-col gap-10">
+          <div className="relative w-full max-w-sm">
+            <img
+              src="/images/20260715.jpg"
+              alt="Zhou Ting Ran Portrait"
+              className="w-full h-auto object-cover border border-neutral-300 dark:border-neutral-700 shadow-lg"
+              style={{ aspectRatio: '3/4' }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1a1a1a]/80 to-transparent p-4">
+              <p className="font-mono text-[9px] text-neutral-300 uppercase tracking-widest">
+                Portrait / 肖像
+              </p>
+            </div>
+          </div>
+
           <div className="flex flex-col gap-6">
             <h3 className="text-xl md:text-2xl font-display font-semibold text-neutral-800 dark:text-neutral-200 uppercase border-b border-neutral-300 dark:border-neutral-700 pb-3">
               ZHOU TING RAN / 周亭燃（Theodore / 西奥多）
