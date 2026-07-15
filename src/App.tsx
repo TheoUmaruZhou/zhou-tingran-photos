@@ -11,7 +11,6 @@ import GalleryGrid from './components/GalleryGrid';
 import Lightbox from './components/Lightbox';
 import AboutContact from './components/AboutContact';
 import MobileBottomNav from './components/MobileBottomNav';
-import Guestbook from './components/Guestbook';
 import SplashScreen from './components/SplashScreen';
 import { Category, Project, Photograph } from './types';
 import { ArrowUp } from 'lucide-react';
@@ -25,7 +24,6 @@ export default function App() {
   const [activePhoto, setActivePhoto] = useState<Photograph | null>(null);
   const [activePhotoList, setActivePhotoList] = useState<Photograph[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [guestbookOpen, setGuestbookOpen] = useState(false);
   const [splashDone, setSplashDone] = useState(() => sessionStorage.getItem('splash_shown') === 'true');
 
   const handleSplashComplete = useCallback(() => {
@@ -124,7 +122,6 @@ export default function App() {
         }}
         onSelectCategory={setSelectedCategory}
         onSelectProject={setSelectedProject}
-        onOpenGuestbook={() => setGuestbookOpen(true)}
       />
 
       <main id="app-main-content" className="flex-1 w-full flex flex-col items-center pb-16 lg:pb-0">
@@ -204,15 +201,12 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <Guestbook isOpen={guestbookOpen} onClose={() => setGuestbookOpen(false)} />
-
       <MobileBottomNav
         activeTab={activeTab}
         onNavigateTab={(tab) => {
           setActiveTab(tab);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        onOpenGuestbook={() => setGuestbookOpen(true)}
       />
 
       <footer id="app-footer-minimal" className="w-full py-16 bg-[#ddd] dark:bg-[#111] border-t border-neutral-300 dark:border-neutral-700 font-mono text-xs text-neutral-600 dark:text-neutral-400 transition-colors duration-300">
