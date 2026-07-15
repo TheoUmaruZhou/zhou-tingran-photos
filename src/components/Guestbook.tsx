@@ -91,11 +91,6 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
     const newMsg = {
       name: name.trim(),
       content: content.trim(),
-      date: new Date().toLocaleDateString('zh-CN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
     };
 
     const { data, error } = await supabase
@@ -103,7 +98,10 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
       .insert([newMsg])
       .select();
 
-    if (!error && data) {
+    if (error) {
+      console.error('发送失败:', error);
+      alert('发送失败，请稍后重试');
+    } else if (data) {
       setNewMsgId(data[0].id);
       setMessages([data[0], ...messages]);
       setSent(true);
