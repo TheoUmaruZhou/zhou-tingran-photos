@@ -68,7 +68,7 @@ export default function AboutContact() {
         <div className="lg:col-span-7 flex flex-col gap-10">
           <div className="relative w-full max-w-sm">
             <img
-              src="/images/20260715.jpg"
+              src="/images/20260715.webp"
               alt="Zhou Ting Ran Portrait"
               className="w-full h-auto object-cover border border-neutral-300 dark:border-neutral-700 shadow-lg"
               style={{ aspectRatio: '3/4' }}
