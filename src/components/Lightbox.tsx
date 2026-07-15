@@ -73,25 +73,30 @@ export default function Lightbox({
   }, [photo.id]);
 
   const handleLike = useCallback(async () => {
-    if (liked) {
-      const newCount = Math.max(0, likes - 1);
-      setLikes(newCount);
-      setLiked(false);
-      localStorage.setItem(`liked_${photo.id}`, 'false');
-      await supabase
-        .from('likes')
-        .update({ count: newCount })
-        .eq('photo_id', photo.id);
-    } else {
-      const newCount = likes + 1;
-      setLikes(newCount);
-      setLiked(true);
-      localStorage.setItem(`liked_${photo.id}`, 'true');
-      await supabase
-        .from('likes')
-        .update({ count: newCount })
-        .eq('photo_id', photo.id);
+    const newCount = liked ? Math.max(0, likes - 1) : likes + 1;
+    
+    // 先尝试更新，如果没有记录则插入
+    const { error: updateError } = await supabase
+      .from('likes')
+      .update({ count: newCount })
+      .eq('photo_id', photo.id);
+
+    if (updateError) {
+      // 如果更新失败（可能是记录不存在），尝试插入
+      if (updateError.code === 'PGRST116' || updateError.message?.includes('0 rows')) {
+        await supabase
+          .from('likes')
+          .insert([{ photo_id: photo.id, count: newCount }]);
+      } else {
+        console.error('Like error:', updateError);
+        return;
+      }
     }
+
+    // 更新本地状态
+    setLikes(newCount);
+    setLiked(!liked);
+    localStorage.setItem(`liked_${photo.id}`, (!liked).toString());
   }, [liked, likes, photo.id]);
 
   const handleShare = useCallback(() => {
