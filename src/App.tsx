@@ -15,6 +15,7 @@ import SplashScreen from './components/SplashScreen';
 import { Category, Project, Photograph } from './types';
 import { ArrowUp } from 'lucide-react';
 import { PHOTOGRAPHS } from './data';
+import { trackPageView } from './utils/analytics';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'works' | 'about'>('home');
@@ -122,6 +123,16 @@ export default function App() {
     document.addEventListener('contextmenu', handleContextMenu);
     return () => document.removeEventListener('contextmenu', handleContextMenu);
   }, []);
+
+  // 跟踪页面浏览
+  useEffect(() => {
+    const pathMap: Record<string, string> = {
+      'home': '/',
+      'works': '/works',
+      'about': '/about',
+    };
+    trackPageView(pathMap[activeTab] || '/');
+  }, [activeTab]);
 
   const handleSelectCategoryFromHome = (category: Category) => {
     setSelectedCategory(category);
