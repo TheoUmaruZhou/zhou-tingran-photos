@@ -192,7 +192,7 @@ export default function Navbar({
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div id="mobile-menu-drawer" className="fixed left-0 top-0 bottom-0 z-50 w-[60%] sm:w-1/2 bg-[#ebebeb] dark:bg-[#1a1a1a] flex flex-col p-6 shadow-2xl animate-slide-in-left divide-y divide-neutral-300 dark:divide-neutral-700">
+          <div id="mobile-menu-drawer" className="fixed left-0 top-0 bottom-0 z-50 w-1/2 bg-[#ebebeb] dark:bg-[#1a1a1a] flex flex-col p-6 shadow-2xl animate-slide-in-left divide-y divide-neutral-300 dark:divide-neutral-700">
             <div className="flex items-center justify-between h-14 pb-4">
               <span className="font-display font-black text-xl text-[#1a1a1a] dark:text-[#ebebeb] uppercase tracking-tighter">
                 Void Menu
