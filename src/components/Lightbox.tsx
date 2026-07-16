@@ -347,35 +347,23 @@ export default function Lightbox({
 
         <div className="flex-1 w-full max-w-8xl mx-auto flex flex-col lg:flex-row items-stretch select-none">
           <div className="flex-1 relative bg-neutral-300 flex items-center justify-center p-4 md:p-8 min-h-[50vh] lg:min-h-0">
-            {isMobile ? (
-              <>
-                <div
-                  onClick={onPrev}
-                  className="absolute left-0 top-0 bottom-0 w-1/3 z-20 cursor-pointer"
-                />
-                <div
-                  onClick={onNext}
-                  className="absolute right-0 top-0 bottom-0 w-1/3 z-20 cursor-pointer"
-                />
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={onPrev}
-                  title="Prev [Left Arrow]"
-                  className="absolute left-4 p-4 text-white/70 hover:text-white hover:scale-110 transition-all z-20 cursor-pointer rounded-none duration-300"
-                >
-                  <ChevronLeft className="w-8 h-8" />
-                </button>
-                <button
-                  onClick={onNext}
-                  title="Next [Right Arrow]"
-                  className="absolute right-4 p-4 text-white/70 hover:text-white hover:scale-110 transition-all z-20 cursor-pointer rounded-none duration-300"
-                >
-                  <ChevronRight className="w-8 h-8" />
-                </button>
-              </>
-            )}
+            {/* 左侧切换按钮 */}
+            <button
+              onClick={onPrev}
+              title="Prev"
+              className="absolute left-4 p-3 bg-white/20 hover:bg-white/30 text-white/90 hover:text-white transition-all z-20 cursor-pointer backdrop-blur-sm rounded-full"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            
+            {/* 右侧切换按钮 */}
+            <button
+              onClick={onNext}
+              title="Next"
+              className="absolute right-4 p-3 bg-white/20 hover:bg-white/30 text-white/90 hover:text-white transition-all z-20 cursor-pointer backdrop-blur-sm rounded-full"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
 
             <motion.div
               key={photo.id}
