@@ -31,6 +31,65 @@ export default function App() {
     sessionStorage.setItem('splash_shown', 'true');
   }, []);
 
+  // 处理浏览器返回操作（包括边缘滑动）
+  useEffect(() => {
+    const handlePopState = () => {
+      // 如果当前在 Lightbox 中，关闭 Lightbox
+      if (activePhoto) {
+        setActivePhoto(null);
+        setActivePhotoList([]);
+        // 重新添加历史记录，防止退出网站
+        window.history.pushState({ from: 'lightbox' }, '', window.location.pathname);
+      } 
+      // 如果当前在作品列表中，返回主页
+      else if (activeTab === 'works') {
+        setActiveTab('home');
+        setSelectedCategory(null);
+        setSelectedProject(null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // 重新添加历史记录
+        window.history.pushState({ from: 'works' }, '', window.location.pathname);
+      }
+      // 如果当前在关于页面，返回主页
+      else if (activeTab === 'about') {
+        setActiveTab('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.history.pushState({ from: 'about' }, '', window.location.pathname);
+      }
+      // 如果在主页，不做任何操作（允许退出网站）
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // 初始化历史记录
+    window.history.replaceState({ from: 'home' }, '', window.location.pathname);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [activePhoto, activeTab]);
+
+  // 当打开 Lightbox 时，添加历史记录
+  useEffect(() => {
+    if (activePhoto) {
+      window.history.pushState({ from: 'lightbox' }, '', window.location.pathname);
+    }
+  }, [activePhoto]);
+
+  // 当切换到作品列表时，添加历史记录
+  useEffect(() => {
+    if (activeTab === 'works' && !activePhoto) {
+      window.history.pushState({ from: 'works' }, '', window.location.pathname);
+    }
+  }, [activeTab, activePhoto]);
+
+  // 当切换到关于页面时，添加历史记录
+  useEffect(() => {
+    if (activeTab === 'about') {
+      window.history.pushState({ from: 'about' }, '', window.location.pathname);
+    }
+  }, [activeTab]);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const photoId = params.get('photo');
