@@ -199,7 +199,7 @@ export default function Navbar({
               </span>
             </div>
 
-            <div className="flex-1 flex flex-col justify-start py-4 gap-4 font-mono text-sm tracking-wider">
+            <div className="flex-1 flex flex-col justify-start py-4 gap-4 font-mono text-sm tracking-wider bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95">
               <button
                 onClick={() => handleNormalTabClick('home')}
                 className={`text-left uppercase py-1.5 hover:text-red-600 ${
