@@ -192,7 +192,7 @@ export default function Navbar({
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div id="mobile-menu-drawer" className="fixed left-0 top-0 bottom-0 z-50 w-1/2 bg-[#ebebeb] dark:bg-[#1a1a1a] flex flex-col p-6 shadow-2xl animate-slide-in-left divide-y divide-neutral-300 dark:divide-neutral-700">
+          <div id="mobile-menu-drawer" className="fixed left-0 top-0 bottom-0 z-50 w-1/2 bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md flex flex-col p-6 shadow-2xl animate-slide-in-left divide-y divide-neutral-300 dark:divide-neutral-700">
             <div className="flex items-center justify-between h-14 pb-4">
               <span className="font-display font-black text-xl text-[#1a1a1a] dark:text-[#ebebeb] uppercase tracking-tighter">
                 Void Menu
@@ -206,10 +206,10 @@ export default function Navbar({
               </button>
             </div>
 
-            <div className="flex-1 flex flex-col justify-start py-4 gap-3 font-mono text-xs tracking-wider">
+            <div className="flex-1 flex flex-col justify-start py-4 gap-4 font-mono text-sm tracking-wider">
               <button
                 onClick={() => handleNormalTabClick('home')}
-                className={`text-left uppercase py-1 hover:text-red-600 ${
+                className={`text-left uppercase py-1.5 hover:text-red-600 ${
                   activeTab === 'home' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
                 }`}
               >
@@ -217,14 +217,14 @@ export default function Navbar({
               </button>
 
               <div className="pt-1">
-                <span className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-1">
-                  <SlidersHorizontal className="w-2.5 h-2.5" />
+                <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
+                  <SlidersHorizontal className="w-3 h-3" />
                   Work Classifications / 作品列表
                 </span>
-                <div className="grid grid-cols-1 gap-0.5 pl-3 border-l border-neutral-300 dark:border-neutral-700">
+                <div className="grid grid-cols-1 gap-1 pl-3 border-l border-neutral-300 dark:border-neutral-700">
                   <button
                     onClick={() => handleCategoryClick(null)}
-                    className="text-left text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] text-[11px] py-1"
+                    className="text-left text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] text-xs py-1.5"
                   >
                     ALL CAPTURES (全部作品)
                   </button>
@@ -232,33 +232,33 @@ export default function Navbar({
                     <button
                       key={cat}
                       onClick={() => handleCategoryClick(cat)}
-                      className={`text-left text-[11px] py-1 flex justify-between ${
+                      className={`text-left text-xs py-1.5 flex justify-between ${
                         selectedCategory === cat ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
                       }`}
                     >
                       <span>{CATEGORIES_INFO[cat].nameZh}</span>
-                      <span className="text-[9px] text-neutral-400 dark:text-neutral-500">{CATEGORIES_INFO[cat].nameEn}</span>
+                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{CATEGORIES_INFO[cat].nameEn}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <span className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-1">
-                  <Map className="w-2.5 h-2.5" />
+                <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
+                  <Map className="w-3 h-3" />
                   On-Going Projects / 区域专案
                 </span>
-                <div className="grid grid-cols-1 gap-0.5 pl-3 border-l border-neutral-300 dark:border-neutral-700">
+                <div className="grid grid-cols-1 gap-1 pl-3 border-l border-neutral-300 dark:border-neutral-700">
                   {Object.values(Project).map((proj) => (
                     <button
                       key={proj}
                       onClick={() => handleProjectClick(proj)}
-                      className={`text-left text-[11px] py-1 flex justify-between ${
+                      className={`text-left text-xs py-1.5 flex justify-between ${
                         selectedProject === proj ? 'text-red-600 font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
                       }`}
                     >
                       <span>专题: {PROJECTS_INFO[proj].nameZh}</span>
-                      <span className="text-[9px] text-neutral-400 dark:text-neutral-500">{PROJECTS_INFO[proj].duration}</span>
+                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{PROJECTS_INFO[proj].duration}</span>
                     </button>
                   ))}
                 </div>
