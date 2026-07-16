@@ -377,13 +377,31 @@ export default function Lightbox({
         </div>
 
         <div className="flex-1 w-full max-w-8xl mx-auto flex flex-col lg:flex-row items-stretch select-none">
-          <div 
+          <div
             className="flex-1 relative bg-neutral-300 flex items-center justify-center p-4 md:p-8 min-h-[50vh] lg:min-h-0"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             style={{ touchAction: 'pan-y' }}
           >
+
+            {/* 左侧切换按钮 - 仅电脑端显示 */}
+            <button
+              onClick={() => { stopAutoPlay(); onPrev(); }}
+              className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
+              aria-label="上一张图片"
+            >
+              <ChevronLeft className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
+            </button>
+
+            {/* 右侧切换按钮 - 仅电脑端显示 */}
+            <button
+              onClick={() => { stopAutoPlay(); onNext(); }}
+              className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
+              aria-label="下一张图片"
+            >
+              <ChevronRight className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
+            </button>
 
             <motion.div
               key={photo.id}
