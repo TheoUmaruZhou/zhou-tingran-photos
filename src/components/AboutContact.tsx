@@ -66,7 +66,7 @@ export default function AboutContact() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         <div className="lg:col-span-7 flex flex-col gap-10">
-          <div className="relative w-full max-w-sm">
+          <div className="relative w-full max-w-sm mx-auto lg:mx-0">
             <img
               src="/images/20260715.webp"
               alt="Zhou Ting Ran Portrait"
@@ -74,8 +74,8 @@ export default function AboutContact() {
               style={{ aspectRatio: '3/4' }}
             />
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1a1a1a]/80 to-transparent p-4">
-              <p className="font-mono text-[9px] text-neutral-300 uppercase tracking-widest">
-                Portrait / 肖像
+              <p className="font-mono text-xs text-neutral-300 uppercase tracking-wider font-semibold">
+                ZHOU TING RAN / 周亭燃
               </p>
             </div>
           </div>

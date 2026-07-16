@@ -187,92 +187,98 @@ export default function Navbar({
       </div>
 
       {mobileMenuOpen && (
-        <div id="mobile-menu-drawer" className="fixed inset-0 z-50 bg-[#ebebeb] dark:bg-[#1a1a1a] flex flex-col p-6 animate-fade-in divide-y divide-neutral-300 dark:divide-neutral-700">
-          <div className="flex items-center justify-between h-14 pb-4">
-            <span className="font-display font-black text-xl text-[#1a1a1a] dark:text-[#ebebeb] uppercase tracking-tighter">
-              Void Menu
-            </span>
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] bg-neutral-200 dark:bg-neutral-800"
-              title="Close Menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="flex-1 flex flex-col justify-start py-8 gap-6 font-mono text-sm tracking-widest overflow-y-auto">
-            <button
-              onClick={() => handleNormalTabClick('home')}
-              className={`text-left uppercase py-2 hover:text-red-600 ${
-                activeTab === 'home' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold text-lg' : 'text-neutral-500 dark:text-neutral-400'
-              }`}
-            >
-              [00] Home / 首页导航
-            </button>
-
-            <div className="pt-2">
-              <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
-                <SlidersHorizontal className="w-3 h-3" />
-                Work Classifications / 作品列表
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div id="mobile-menu-drawer" className="fixed left-0 top-0 bottom-0 z-50 w-[60%] sm:w-1/2 bg-[#ebebeb] dark:bg-[#1a1a1a] flex flex-col p-6 shadow-2xl animate-slide-in-left divide-y divide-neutral-300 dark:divide-neutral-700">
+            <div className="flex items-center justify-between h-14 pb-4">
+              <span className="font-display font-black text-xl text-[#1a1a1a] dark:text-[#ebebeb] uppercase tracking-tighter">
+                Void Menu
               </span>
-              <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300 dark:border-neutral-700">
-                <button
-                  onClick={() => handleCategoryClick(null)}
-                  className="text-left text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] text-xs py-1.5"
-                >
-                  ALL CAPTURES (全部作品)
-                </button>
-                {Object.values(Category).map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => handleCategoryClick(cat)}
-                    className={`text-left text-xs py-1.5 flex justify-between ${
-                      selectedCategory === cat ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
-                    }`}
-                  >
-                    <span>{CATEGORIES_INFO[cat].nameZh}</span>
-                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{CATEGORIES_INFO[cat].nameEn}</span>
-                  </button>
-                ))}
-              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] bg-neutral-200 dark:bg-neutral-800"
+                title="Close Menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            <div>
-              <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
-                <Map className="w-3 h-3" />
-                On-Going Projects / 区域专案
-              </span>
-              <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300 dark:border-neutral-700">
-                {Object.values(Project).map((proj) => (
+            <div className="flex-1 flex flex-col justify-start py-8 gap-6 font-mono text-sm tracking-widest overflow-y-auto">
+              <button
+                onClick={() => handleNormalTabClick('home')}
+                className={`text-left uppercase py-2 hover:text-red-600 ${
+                  activeTab === 'home' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold text-lg' : 'text-neutral-500 dark:text-neutral-400'
+                }`}
+              >
+                [00] Home / 首页导航
+              </button>
+
+              <div className="pt-2">
+                <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
+                  <SlidersHorizontal className="w-3 h-3" />
+                  Work Classifications / 作品列表
+                </span>
+                <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300 dark:border-neutral-700">
                   <button
-                    key={proj}
-                    onClick={() => handleProjectClick(proj)}
-                    className={`text-left text-xs py-1.5 flex justify-between ${
-                      selectedProject === proj ? 'text-red-600 font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
-                    }`}
+                    onClick={() => handleCategoryClick(null)}
+                    className="text-left text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] text-xs py-1.5"
                   >
-                    <span>专题: {PROJECTS_INFO[proj].nameZh}</span>
-                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{PROJECTS_INFO[proj].duration}</span>
+                    ALL CAPTURES (全部作品)
                   </button>
-                ))}
+                  {Object.values(Category).map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => handleCategoryClick(cat)}
+                      className={`text-left text-xs py-1.5 flex justify-between ${
+                        selectedCategory === cat ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
+                      }`}
+                    >
+                      <span>{CATEGORIES_INFO[cat].nameZh}</span>
+                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{CATEGORIES_INFO[cat].nameEn}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              <div>
+                <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest flex items-center gap-1 mb-2">
+                  <Map className="w-3 h-3" />
+                  On-Going Projects / 区域专案
+                </span>
+                <div className="grid grid-cols-1 gap-1 pl-4 border-l border-neutral-300 dark:border-neutral-700">
+                  {Object.values(Project).map((proj) => (
+                    <button
+                      key={proj}
+                      onClick={() => handleProjectClick(proj)}
+                      className={`text-left text-xs py-1.5 flex justify-between ${
+                        selectedProject === proj ? 'text-red-600 font-bold' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
+                      }`}
+                    >
+                      <span>专题: {PROJECTS_INFO[proj].nameZh}</span>
+                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500">{PROJECTS_INFO[proj].duration}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleNormalTabClick('about')}
+                className={`text-left uppercase py-4 border-t border-neutral-300 dark:border-neutral-700 hover:text-red-600 mt-auto ${
+                  activeTab === 'about' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold text-lg' : 'text-neutral-500 dark:text-neutral-400'
+                }`}
+              >
+                About & Inquiries / 关于与联络
+              </button>
             </div>
 
-            <button
-              onClick={() => handleNormalTabClick('about')}
-              className={`text-left uppercase py-4 border-t border-neutral-300 dark:border-neutral-700 hover:text-red-600 mt-auto ${
-                activeTab === 'about' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold text-lg' : 'text-neutral-500 dark:text-neutral-400'
-              }`}
-            >
-              About & Inquiries / 关于与联络
-            </button>
+            <div className="py-6 font-mono text-[9px] text-neutral-500 dark:text-neutral-400">
+              © CHEN LU PHOTOGRAPHY ARCHIVES. METADATA REVISION 2026.
+            </div>
           </div>
-
-          <div className="py-6 font-mono text-[9px] text-neutral-500 dark:text-neutral-400">
-            © CHEN LU PHOTOGRAPHY ARCHIVES. METADATA REVISION 2026.
-          </div>
-        </div>
+        </>
       )}
     </nav>
   );
