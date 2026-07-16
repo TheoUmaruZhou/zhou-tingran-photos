@@ -193,17 +193,10 @@ export default function Navbar({
             onClick={() => setMobileMenuOpen(false)}
           />
           <div id="mobile-menu-drawer" className="fixed left-0 top-0 bottom-0 z-50 w-1/2 bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md flex flex-col p-6 shadow-2xl animate-slide-in-left divide-y divide-neutral-300 dark:divide-neutral-700">
-            <div className="flex items-center justify-between h-14 pb-4">
+            <div className="h-12 pb-4">
               <span className="font-display font-black text-xl text-[#1a1a1a] dark:text-[#ebebeb] uppercase tracking-tighter">
                 Void Menu
               </span>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] bg-neutral-200 dark:bg-neutral-800"
-                title="Close Menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
             </div>
 
             <div className="flex-1 flex flex-col justify-start py-4 gap-4 font-mono text-sm tracking-wider">
