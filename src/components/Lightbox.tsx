@@ -35,6 +35,8 @@ export default function Lightbox({
   const [downloading, setDownloading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -44,6 +46,33 @@ export default function Lightbox({
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // 触摸滑动处理
+  const minSwipeDistance = 50;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      onNext();
+    }
+    if (isRightSwipe) {
+      onPrev();
+    }
+  };
 
   const fetchLikes = async (photoId: string) => {
     setLoadingLikes(true);
@@ -346,24 +375,12 @@ export default function Lightbox({
         </div>
 
         <div className="flex-1 w-full max-w-8xl mx-auto flex flex-col lg:flex-row items-stretch select-none">
-          <div className="flex-1 relative bg-neutral-300 flex items-center justify-center p-4 md:p-8 min-h-[50vh] lg:min-h-0">
-            {/* 左侧切换按钮 */}
-            <button
-              onClick={onPrev}
-              title="Prev"
-              className="absolute left-4 p-3 bg-white/20 hover:bg-white/30 text-white/90 hover:text-white transition-all z-20 cursor-pointer backdrop-blur-sm rounded-full"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            
-            {/* 右侧切换按钮 */}
-            <button
-              onClick={onNext}
-              title="Next"
-              className="absolute right-4 p-3 bg-white/20 hover:bg-white/30 text-white/90 hover:text-white transition-all z-20 cursor-pointer backdrop-blur-sm rounded-full"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
+          <div 
+            className="flex-1 relative bg-neutral-300 flex items-center justify-center p-4 md:p-8 min-h-[50vh] lg:min-h-0"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
 
             <motion.div
               key={photo.id}
