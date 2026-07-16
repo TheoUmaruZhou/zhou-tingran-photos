@@ -3255,7 +3255,7 @@ export const PROJECTS_INFO: Record<Project, ProjectInfo> = {
     duration: '2022 - 2026',
   },
   'tu-guan': {
-    nameZh: '专题-途观',
+    nameZh: '途观',
     nameEn: 'Tu Guan',
     intro: '路途中的观察与记录，行走在城乡之间',
     background: '沿途风光与人文纪实摄影项目',

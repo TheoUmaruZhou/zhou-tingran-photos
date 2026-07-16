@@ -222,7 +222,7 @@ export default function GalleryGrid({
                     : 'bg-[#e0e0e0] dark:bg-[#2a2a2a] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-600 hover:text-red-600'
                 }`}
               >
-                专题: {label.nameZh}
+                专题：{label.nameZh}
               </button>
             );
           })}

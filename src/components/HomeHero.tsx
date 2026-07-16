@@ -110,7 +110,7 @@ export default function HomeHero({
     {
       id: Project.TuGuan,
       num: 'P.04',
-      name: '专题-途观 / Tu Guan',
+      name: '途观 / Tu Guan',
       time: '2023 – 2026',
       image: '/images/专题-途观/下乡.webp',
     },

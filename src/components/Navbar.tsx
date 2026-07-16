@@ -142,7 +142,7 @@ export default function Navbar({
                       selectedProject === proj ? 'text-red-600 bg-neutral-200 dark:bg-neutral-800 font-bold' : 'text-neutral-600 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700'
                     }`}
                   >
-                    <span>专题: {PROJECTS_INFO[proj].nameZh}</span>
+                    <span>专题：{PROJECTS_INFO[proj].nameZh}</span>
                     <span className="text-red-400 text-[9px] font-mono">{PROJECTS_INFO[proj].duration.split(' ')[0]}</span>
                   </button>
                 ))}
