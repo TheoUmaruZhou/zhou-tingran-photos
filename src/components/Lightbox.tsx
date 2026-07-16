@@ -67,9 +67,11 @@ export default function Lightbox({
     const isRightSwipe = distance < -minSwipeDistance;
 
     if (isLeftSwipe) {
+      stopAutoPlay();
       onNext();
     }
     if (isRightSwipe) {
+      stopAutoPlay();
       onPrev();
     }
   };
@@ -380,6 +382,7 @@ export default function Lightbox({
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            style={{ touchAction: 'pan-y' }}
           >
 
             <motion.div
