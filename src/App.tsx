@@ -12,13 +12,14 @@ import Lightbox from './components/Lightbox';
 import AboutContact from './components/AboutContact';
 import MobileBottomNav from './components/MobileBottomNav';
 import SplashScreen from './components/SplashScreen';
+import VideoGallery from './components/VideoGallery';
 import { Category, Project, Photograph } from './types';
 import { ArrowUp } from 'lucide-react';
 import { PHOTOGRAPHS } from './data';
 import { trackPageView } from './utils/analytics';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'works' | 'about'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'works' | 'videos' | 'about'>('home');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
@@ -50,6 +51,12 @@ export default function App() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         // 重新添加历史记录
         window.history.pushState({ from: 'works' }, '', window.location.pathname);
+      }
+      // 如果当前在视频页面，返回主页
+      else if (activeTab === 'videos') {
+        setActiveTab('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.history.pushState({ from: 'videos' }, '', window.location.pathname);
       }
       // 如果当前在关于页面，返回主页
       else if (activeTab === 'about') {
@@ -83,6 +90,13 @@ export default function App() {
       window.history.pushState({ from: 'works' }, '', window.location.pathname);
     }
   }, [activeTab, activePhoto]);
+
+  // 当切换到视频页面时，添加历史记录
+  useEffect(() => {
+    if (activeTab === 'videos') {
+      window.history.pushState({ from: 'videos' }, '', window.location.pathname);
+    }
+  }, [activeTab]);
 
   // 当切换到关于页面时，添加历史记录
   useEffect(() => {
@@ -129,6 +143,7 @@ export default function App() {
     const pathMap: Record<string, string> = {
       'home': '/',
       'works': '/works',
+      'videos': '/videos',
       'about': '/about',
     };
     trackPageView(pathMap[activeTab] || '/');
@@ -231,6 +246,19 @@ export default function App() {
             </motion.div>
           )}
 
+          {activeTab === 'videos' && (
+            <motion.div
+              key="videos"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full pt-6"
+            >
+              <VideoGallery />
+            </motion.div>
+          )}
+
           {activeTab === 'about' && (
             <motion.div
               key="about"
@@ -310,6 +338,15 @@ export default function App() {
               className="hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors text-left"
             >
               [ WORKS ]
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('videos');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors text-left"
+            >
+              [ VIDEOS ]
             </button>
             <button
               onClick={() => {

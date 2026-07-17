@@ -1,4 +1,4 @@
-import { Photograph } from './types';
+import { Photograph, Video, VideoCategory, VideoCategoryDetails, Project } from './types';
 
 export const PHOTOGRAPHS: Photograph[] = [
   {
@@ -3359,3 +3359,54 @@ export const PROJECTS_INFO: Record<Project, ProjectInfo> = {
     duration: '2024 - 2026',
   },
 };
+
+// 视频分类信息
+export const VIDEO_CATEGORIES_INFO: Record<VideoCategory, VideoCategoryDetails> = {
+  'behind-the-scenes': {
+    id: VideoCategory.BehindTheScenes,
+    nameZh: '幕后花絮',
+    nameEn: 'Behind the Scenes',
+    description: '摄影创作的幕后故事',
+  },
+  'creative-process': {
+    id: VideoCategory.CreativeProcess,
+    nameZh: '创作过程',
+    nameEn: 'Creative Process',
+    description: '从构思到成片的完整记录',
+  },
+  'documentary': {
+    id: VideoCategory.Documentary,
+    nameZh: '纪录片',
+    nameEn: 'Documentary',
+    description: '实地考察与项目纪录',
+  },
+  'tutorial': {
+    id: VideoCategory.Tutorial,
+    nameZh: '教程',
+    nameEn: 'Tutorial',
+    description: '摄影技巧与后期分享',
+  },
+  'other': {
+    id: VideoCategory.Other,
+    nameZh: '其他',
+    nameEn: 'Other',
+    description: '其他视频内容',
+  },
+};
+
+// 视频数据
+export const VIDEOS: Video[] = [
+  {
+    id: 'video-001',
+    title: '《临界点&城市边缘》城市在长，农田在退',
+    titleEn: 'Critical Point & Urban Edges',
+    description: '探索城市扩张与农田退让的边界地带，记录快速城市化进程中的土地变迁与人文思考。',
+    category: VideoCategory.Documentary,
+    bvid: 'BV1bM596qEoA', // 从 https://b23.tv/EBul8Ub 提取
+    coverUrl: '/images/新地形摄影/虚构.webp', // 视频预览封面
+    duration: '待补充',
+    uploadDate: '2025-01',
+    project: Project.UrbanBorders,
+    tags: ['城市边缘', '纪实摄影', '重庆'],
+  },
+];

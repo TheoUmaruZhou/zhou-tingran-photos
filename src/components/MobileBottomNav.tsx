@@ -1,10 +1,10 @@
-import { Home, Grid3X3, User } from 'lucide-react';
+import { Home, Grid3X3, User, Video } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon } from 'lucide-react';
 
 interface MobileBottomNavProps {
-  activeTab: 'home' | 'works' | 'about';
-  onNavigateTab: (tab: 'home' | 'works' | 'about') => void;
+  activeTab: 'home' | 'works' | 'videos' | 'about';
+  onNavigateTab: (tab: 'home' | 'works' | 'videos' | 'about') => void;
 }
 
 export default function MobileBottomNav({ activeTab, onNavigateTab }: MobileBottomNavProps) {
@@ -13,6 +13,7 @@ export default function MobileBottomNav({ activeTab, onNavigateTab }: MobileBott
   const items = [
     { tab: 'home' as const, label: 'HOME', icon: Home },
     { tab: 'works' as const, label: 'WORKS', icon: Grid3X3 },
+    { tab: 'videos' as const, label: 'VIDEOS', icon: Video },
     { tab: 'about' as const, label: 'ABOUT', icon: User },
   ];
 

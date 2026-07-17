@@ -10,10 +10,10 @@ import { CATEGORIES_INFO, PROJECTS_INFO } from '../data';
 import { useTheme } from '../context/ThemeContext';
 
 interface NavbarProps {
-  activeTab: 'home' | 'works' | 'about';
+  activeTab: 'home' | 'works' | 'videos' | 'about';
   selectedCategory: Category | null;
   selectedProject: Project | null;
-  onNavigateTab: (tab: 'home' | 'works' | 'about') => void;
+  onNavigateTab: (tab: 'home' | 'works' | 'videos' | 'about') => void;
   onSelectCategory: (category: Category | null) => void;
   onSelectProject: (project: Project | null) => void;
 }
@@ -149,6 +149,15 @@ export default function Navbar({
               </div>
             )}
           </div>
+
+          <button
+            onClick={() => handleNormalTabClick('videos' as any)}
+            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase ${
+              activeTab === 'videos' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
+            }`}
+          >
+            Videos / 视频专栏
+          </button>
 
           <button
             onClick={() => handleNormalTabClick('about')}
