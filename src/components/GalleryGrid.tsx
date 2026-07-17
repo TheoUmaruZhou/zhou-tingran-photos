@@ -95,7 +95,7 @@ export default function GalleryGrid({
         subtitle: info.nameEn,
         intro: info.intro,
         extra: info.background,
-        meta: `记录年份：2025 - 2026 · 拍摄区域：重庆渝北区`,
+        meta: `记录年份：2025 - 2026 · 拍摄区域：重庆`,
       };
     }
     if (selectedCategory) {
@@ -143,7 +143,7 @@ export default function GalleryGrid({
                   <Info className="w-5 h-5 text-neutral-500 dark:text-neutral-400 shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-mono text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-2">
-                      《此地：渝北记忆》创作背景  /  CREATION BACKGROUND
+                      《此地：记忆》创作背景  /  CREATION BACKGROUND
                     </h4>
                     <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed font-sans font-light">
                       {headerDetails.extra}

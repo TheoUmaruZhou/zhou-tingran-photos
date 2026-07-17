@@ -143,9 +143,9 @@ export default function Lightbox({
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.referrerPolicy = 'no-referrer';
-      
+
       const imageSrc = photo.originalJpgUrl || photo.imageUrl;
-      
+
       const tryLoadImage = async (src: string): Promise<boolean> => {
         return new Promise((resolve) => {
           img.onload = () => resolve(true);
@@ -153,71 +153,98 @@ export default function Lightbox({
           img.src = src;
         });
       };
-      
+
       let loaded = await tryLoadImage(imageSrc);
       if (!loaded && photo.originalJpgUrl) {
         loaded = await tryLoadImage(photo.imageUrl);
       }
-      
+
       if (!loaded) {
         return null;
       }
 
-      const size = Math.max(img.width, img.height) + 600;
+      const size = Math.max(img.width, img.height) + 800;
       const canvas = document.createElement('canvas');
       canvas.width = size;
       canvas.height = size;
       const ctx = canvas.getContext('2d')!;
 
-      ctx.fillStyle = '#ffffff';
+      // 背景渐变效果
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#f8f7f4');
+      gradient.addColorStop(1, '#ebe9e4');
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, size, size);
 
+      // 图片区域
       const margin = size * 0.08;
       const maxImgW = size - margin * 2;
-      const maxImgH = size * 1.5;
+      const maxImgH = size * 1.4;
       const scale = Math.min(maxImgW / img.width, maxImgH / img.height);
       const drawW = img.width * scale;
       const drawH = img.height * scale;
       const imgX = (size - drawW) / 2;
-      const imgY = size * 0.08;
+      const imgY = size * 0.12;
 
+      // 图片边框装饰
+      ctx.strokeStyle = '#d4d0c8';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(imgX - 15, imgY - 15, drawW + 30, drawH + 30);
+
+      // 内边框
+      ctx.strokeStyle = '#a09890';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(imgX - 8, imgY - 8, drawW + 16, drawH + 16);
+
+      // 绘制图片
       ctx.drawImage(img, imgX, imgY, drawW, drawH);
 
-      const bottomStart = imgY + drawH;
-      const bottomEnd = size - size * 0.04;
+      // 底部信息区
+      const bottomStart = imgY + drawH + 40;
+      const bottomEnd = size - size * 0.05;
       const bottomSpace = bottomEnd - bottomStart;
+      let curY = bottomStart + bottomSpace * 0.08;
 
-      let curY = bottomStart + bottomSpace * 0.12;
+      // 装饰线
+      ctx.strokeStyle = '#c4b8a8';
+      ctx.lineWidth = 1;
+      const decorLineW = size * 0.12;
+      ctx.beginPath();
+      ctx.moveTo(size / 2 - decorLineW, curY);
+      ctx.lineTo(size / 2 + decorLineW, curY);
+      ctx.stroke();
 
-      ctx.fillStyle = '#1a1a1a';
-      ctx.font = `bold ${Math.round(size * 0.025)}px "Arial", "Helvetica", sans-serif`;
+      // 装饰点
+      ctx.fillStyle = '#8b7355';
+      ctx.beginPath();
+      ctx.arc(size / 2, curY, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      curY += size * 0.05;
+
+      // 作品标题 - 使用更艺术化的字体风格
+      ctx.fillStyle = '#2c2416';
+      ctx.font = `italic bold ${Math.round(size * 0.028)}px "Georgia", "Times New Roman", serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       ctx.fillText(photo.title.toUpperCase(), size / 2, curY);
-      curY += size * 0.07;
-
-      ctx.fillStyle = '#666666';
-      ctx.font = `${Math.round(size * 0.02)}px "Arial", "Helvetica", sans-serif`;
-      ctx.fillText(`${photo.exif.camera}  ·  ${photo.exif.lens}  ·  ${photo.exif.exposure}  ·  ${photo.exif.focalLength}`, size / 2, curY);
-      curY += size * 0.06;
-
-      ctx.strokeStyle = '#cccccc';
-      ctx.lineWidth = 1;
-      const lineW = size * 0.08;
-      ctx.beginPath();
-      ctx.moveTo(size / 2 - lineW, curY);
-      ctx.lineTo(size / 2 + lineW, curY);
-      ctx.stroke();
       curY += size * 0.055;
 
-      ctx.fillStyle = '#1a1a1a';
-      ctx.font = `600 ${Math.round(size * 0.018)}px "Arial", "Helvetica", sans-serif`;
-      ctx.fillText('THEODORE PHOTOGRAPHY', size / 2, curY);
-      curY += size * 0.05;
+      // 副标题
+      ctx.fillStyle = '#6b5d4d';
+      ctx.font = `${Math.round(size * 0.016)}px "Georgia", "Times New Roman", serif`;
+      ctx.fillText(`— ${photo.year} —`, size / 2, curY);
+      curY += size * 0.06;
 
-      ctx.fillStyle = '#999999';
-      ctx.font = `${Math.round(size * 0.019)}px "Arial", "Helvetica", sans-serif`;
-      ctx.fillText("Curator's Edition · 2026", size / 2, curY);
+      // 设备信息
+      ctx.fillStyle = '#888078';
+      ctx.font = `300 ${Math.round(size * 0.014)}px "Georgia", "Times New Roman", serif`;
+      ctx.fillText(`${photo.exif.camera}  ·  ${photo.exif.lens}`, size / 2, curY);
+      curY += size * 0.04;
+
+      ctx.fillStyle = '#9a9288';
+      ctx.font = `${Math.round(size * 0.013)}px "Georgia", "Times New Roman", serif`;
+      ctx.fillText(`${photo.exif.exposure}  ·  ${photo.exif.focalLength}`, size / 2, curY);
 
       return canvas.toDataURL('image/jpeg', 0.95);
     } catch {
@@ -557,16 +584,16 @@ export default function Lightbox({
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="bg-[#1a1a1a] border border-neutral-700 max-w-4xl w-full"
+                className="bg-[#f5f5f0] border border-neutral-300 max-w-4xl w-full"
               >
-                <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-700">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-300">
                   <div className="flex items-center gap-3">
                     <Download className="w-4 h-4 text-red-600" />
-                    <span className="font-mono text-xs text-neutral-400 uppercase tracking-wider">Download Preview</span>
+                    <span className="font-mono text-xs text-neutral-600 uppercase tracking-wider">Download Preview</span>
                   </div>
                   <button
                     onClick={handleCancelDownload}
-                    className="p-2 text-neutral-500 hover:text-white transition-colors cursor-pointer"
+                    className="p-2 text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -590,7 +617,7 @@ export default function Lightbox({
                   <div className="flex justify-center gap-4">
                     <button
                       onClick={handleCancelDownload}
-                      className="px-6 py-3 bg-neutral-800 text-neutral-400 font-mono text-xs uppercase tracking-wider hover:bg-neutral-700 hover:text-white transition-colors cursor-pointer border border-neutral-700"
+                      className="px-6 py-3 bg-neutral-200 text-neutral-700 font-mono text-xs uppercase tracking-wider hover:bg-neutral-300 hover:text-neutral-900 transition-colors cursor-pointer border border-neutral-300"
                     >
                       Cancel
                     </button>

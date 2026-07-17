@@ -16,6 +16,7 @@ export enum Project {
   NewVillages = 'new-villages',
   UrbanBorders = 'urban-borders',
   TuGuan = 'tu-guan',
+  DailyMoments = 'daily-moments',
 }
 
 export interface ExifData {

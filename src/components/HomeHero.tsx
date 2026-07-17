@@ -114,6 +114,13 @@ export default function HomeHero({
       time: '2023 – 2026',
       image: '/images/专题-途观/下乡.webp',
     },
+    {
+      id: Project.DailyMoments,
+      num: 'P.05',
+      name: '碎隅光景 / Daily Moments',
+      time: '2024 – 2026',
+      image: '/images/专题-碎隅光景/看.webp',
+    },
   ];
 
   return (
