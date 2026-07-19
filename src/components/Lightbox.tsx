@@ -5,7 +5,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronLeft, ChevronRight, Camera, Cpu, Compass, Settings, Calendar, Eye, Play, Pause, Share2, Check, Heart, Download } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Camera, Cpu, Compass, Settings, Calendar, Eye, Play, Pause, Share2, Check, Heart, Download, Maximize2, Minimize2 } from 'lucide-react';
 import { Photograph } from '../types';
 import { supabase } from '../lib/supabase';
 
@@ -37,6 +37,29 @@ export default function Lightbox({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // 全屏切换函数
+  const toggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => {
+        setIsFullscreen(true);
+      }).catch(() => {});
+    } else {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false);
+      }).catch(() => {});
+    }
+  }, []);
+
+  // 监听全屏变化
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -400,78 +423,77 @@ export default function Lightbox({
     <AnimatePresence>
       <div
         id="lightbox-viewport"
-        className="fixed inset-0 z-50 overflow-y-auto bg-[#ebebeb]/98 dark:bg-[#1a1a1a]/98 flex flex-col justify-start transition-colors duration-300"
+        className={`fixed inset-0 z-50 overflow-y-auto ${isFullscreen ? 'bg-black' : 'bg-[#ebebeb]/98 dark:bg-[#1a1a1a]/98'} flex flex-col justify-start transition-colors duration-300`}
       >
-        <div className="w-full flex items-center justify-between px-6 py-4 border-b border-neutral-300 dark:border-neutral-700 bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 sticky top-0 z-10 shrink-0">
-          <div className="flex items-center gap-4 font-mono text-xs text-neutral-600 dark:text-neutral-400">
-            <span className="w-2 h-2 rounded-full bg-red-600"></span>
-            <span className="tracking-widest uppercase">SPECIMEN PREVIEW</span>
-            <span className="text-neutral-400 dark:text-neutral-500">/</span>
-            <span>
-              INDEX [{currentIndex + 1} OF {totalCount}]
-            </span>
-          </div>
+        {/* 顶部栏 - 全屏时隐藏 */}
+        {!isFullscreen && (
+          <>
+            <div className="w-full flex items-center justify-between px-4 md:px-6 py-3 border-b border-neutral-200 dark:border-neutral-800 bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 sticky top-0 z-10 shrink-0">
+              <div className="flex items-center gap-3 font-mono text-xs text-neutral-500 dark:text-neutral-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                <span className="text-[10px]">
+                  {currentIndex + 1} / {totalCount}
+                </span>
+              </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 hidden md:inline">
-              [← / → / SPACE KEYBOARD KEYS ACTION]
-            </span>
-            <button
-              id="lightbox-autoplay-btn"
-              onClick={toggleAutoPlay}
-              className={`p-2 transition-colors uppercase font-mono text-xs flex items-center gap-2 cursor-pointer border ${
-                autoPlay
-                  ? 'text-red-600 border-red-600 bg-red-50 hover:bg-red-100 dark:hover:bg-red-900/30'
-                  : 'text-neutral-500 dark:text-neutral-400 border-neutral-300 dark:border-neutral-700 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700'
-              }`}
-            >
-              {autoPlay ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-              <span>{autoPlay ? 'Pause' : 'Auto Play'}</span>
-            </button>
-            <button
-              id="lightbox-close-btn"
-              onClick={() => { setAutoPlay(false); stopAutoPlay(); onClose(); }}
-              className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors uppercase font-mono text-xs flex items-center gap-2 cursor-pointer border border-neutral-300 dark:border-neutral-700"
-            >
-              <span>Close</span>
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleFullscreen}
+                  className="p-2 text-neutral-400 dark:text-neutral-500 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer rounded"
+                  aria-label="全屏查看"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+                <button
+                  id="lightbox-close-btn"
+                  onClick={() => { setAutoPlay(false); stopAutoPlay(); onClose(); }}
+                  className="p-2 text-neutral-400 dark:text-neutral-500 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer rounded"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
 
-        <div className="w-full h-[2px] bg-neutral-300">
+            {/* 进度条 */}
+            <div className="w-full h-[2px] bg-neutral-200 dark:bg-neutral-800">
+              <div
+                className="h-full bg-red-600 transition-all duration-300 ease-out"
+                style={{ width: `${((currentIndex + 1) / totalCount) * 100}%` }}
+              />
+            </div>
+          </>
+        )}
+
+        <div className={`flex-1 w-full ${isFullscreen ? '' : 'max-w-8xl'} mx-auto flex flex-col lg:flex-row items-stretch select-none`}>
           <div
-            className="h-full bg-red-600 transition-all duration-300 ease-out"
-            style={{ width: `${((currentIndex + 1) / totalCount) * 100}%` }}
-          />
-        </div>
-
-        <div className="flex-1 w-full max-w-8xl mx-auto flex flex-col lg:flex-row items-stretch select-none">
-          <div
-            className="flex-1 relative bg-neutral-300 flex items-center justify-center p-4 md:p-8 min-h-[50vh] lg:min-h-0"
+            className={`flex-1 relative ${isFullscreen ? 'bg-black' : 'bg-neutral-300'} flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-4 md:p-8'} min-h-[50vh] lg:min-h-0`}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             style={{ touchAction: 'pan-y' }}
           >
 
-            {/* 左侧切换按钮 - 仅电脑端显示 */}
-            <button
-              onClick={() => { stopAutoPlay(); onPrev(); }}
-              className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
-              aria-label="上一张图片"
-            >
-              <ChevronLeft className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
-            </button>
+            {/* 左侧切换按钮 - 仅电脑端显示，全屏时隐藏 */}
+            {!isFullscreen && (
+              <button
+                onClick={() => { stopAutoPlay(); onPrev(); }}
+                className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
+                aria-label="上一张图片"
+              >
+                <ChevronLeft className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
+              </button>
+            )}
 
-            {/* 右侧切换按钮 - 仅电脑端显示 */}
-            <button
-              onClick={() => { stopAutoPlay(); onNext(); }}
-              className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
-              aria-label="下一张图片"
-            >
-              <ChevronRight className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
-            </button>
+            {/* 右侧切换按钮 - 仅电脑端显示，全屏时隐藏 */}
+            {!isFullscreen && (
+              <button
+                onClick={() => { stopAutoPlay(); onNext(); }}
+                className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
+                aria-label="下一张图片"
+              >
+                <ChevronRight className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
+              </button>
+            )}
 
             <motion.div
               key={photo.id}
@@ -480,134 +502,138 @@ export default function Lightbox({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.3 } }}
               transition={{ layout: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }}
-              className="max-w-full max-h-[75vh] lg:max-h-[82vh] relative"
+              className={`${isFullscreen ? 'max-w-full max-h-full' : 'max-w-full max-h-[75vh] lg:max-h-[82vh]'} relative`}
             >
               <img
                 src={photo.imageUrl}
                 alt={photo.title}
-                className="max-w-full max-h-[75vh] lg:max-h-[82vh] object-contain shadow-2xl pointer-events-none mx-auto"
+                className={`${isFullscreen ? 'max-w-full max-h-[100vh]' : 'max-w-full max-h-[75vh] lg:max-h-[82vh]'} object-contain shadow-2xl mx-auto`}
                 referrerPolicy="no-referrer"
               />
             </motion.div>
+
+            {/* 全屏模式下的切换按钮 */}
+            {isFullscreen && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); stopAutoPlay(); onPrev(); }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 z-20 group"
+                  aria-label="上一张图片"
+                >
+                  <ChevronLeft className="w-6 h-6 text-white/70 group-hover:text-white transition-colors" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); stopAutoPlay(); onNext(); }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 z-20 group"
+                  aria-label="下一张图片"
+                >
+                  <ChevronRight className="w-6 h-6 text-white/70 group-hover:text-white transition-colors" />
+                </button>
+                {/* 退出全屏按钮 */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setIsFullscreen(false); }}
+                  className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 z-20 group"
+                  aria-label="退出全屏"
+                >
+                  <Minimize2 className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
+                </button>
+              </>
+            )}
           </div>
 
-          <div className="w-full lg:w-[420px] bg-[#e0e0e0] dark:bg-[#2a2a2a] lg:border-l border-neutral-300 dark:border-neutral-700 p-8 flex flex-col justify-between overflow-y-auto shrink-0 border-t border-neutral-300 dark:border-neutral-700 lg:border-t-0">
-            <div>
-              <div className="flex justify-between items-center mb-6 font-mono text-xs">
-                <span className="text-red-600 tracking-wider font-semibold uppercase">
-                  {photo.category ? photo.category.replace('-', ' ') : (photo.project ? 'PROJECT' : 'ARCHIVE')}
+          {/* 右侧信息栏 - 全屏时隐藏 */}
+          {!isFullscreen && (
+          <div className="w-full lg:w-[380px] bg-[#f5f5f5] dark:bg-[#252525] lg:border-l border-neutral-200 dark:border-neutral-800 flex flex-col overflow-y-auto shrink-0 border-t border-neutral-200 dark:border-neutral-800 lg:border-t-0">
+            {/* 头部：标题区 */}
+            <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center justify-between mb-3">
+                <span className="font-mono text-[10px] text-red-600 tracking-widest uppercase font-semibold">
+                  {photo.project || photo.category || 'ARCHIVE'}
                 </span>
-                <span className="text-neutral-400 dark:text-neutral-500 bg-neutral-200 dark:bg-neutral-800 px-2 py-1">
-                  ID: {photo.id.toUpperCase()}
+                <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
+                  #{photo.id.toUpperCase()}
                 </span>
               </div>
-
-              <h3 className="text-3xl font-display font-extrabold text-[#1a1a1a] dark:text-[#ebebeb] tracking-tight leading-none uppercase">
+              <h3 className="text-2xl font-display font-bold text-[#1a1a1a] dark:text-[#ebebeb] tracking-tight leading-tight">
                 {photo.title}
               </h3>
-              <p className="mt-4 text-neutral-600 dark:text-neutral-400 text-sm font-sans leading-relaxed font-light">
-                {photo.desc}
-              </p>
+              {photo.desc && (
+                <p className="mt-2 text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed">
+                  {photo.desc}
+                </p>
+              )}
+            </div>
 
-              <div className="hr-minimal my-6" />
-
-              <h4 className="font-mono text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-4">
-                地理归档暨拍摄参数 / GEOGRAPHIC & EXIF METADATA
-              </h4>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Compass className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase">LOCATION</p>
-                    <p className="text-sm text-neutral-800 dark:text-neutral-200 mt-0.5">{photo.location}</p>
-                  </div>
+            {/* 拍摄参数 */}
+            <div className="flex-1 p-6">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase mb-1">Location</p>
+                  <p className="text-neutral-700 dark:text-neutral-300 font-medium">{photo.location}</p>
                 </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Calendar className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase">TIMESTEP YEAR</p>
-                    <p className="text-sm text-neutral-800 dark:text-neutral-200 mt-0.5">{photo.year} A.D.</p>
-                  </div>
+                <div>
+                  <p className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase mb-1">Year</p>
+                  <p className="text-neutral-700 dark:text-neutral-300 font-medium">{photo.year}</p>
                 </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Camera className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase">CAMERA BODY</p>
-                    <p className="text-sm text-neutral-800 dark:text-neutral-200 mt-0.5 font-mono">{photo.exif.camera}</p>
-                    <span className="inline-block mt-1 font-mono text-[9px] bg-red-100 dark:bg-red-900/30 text-red-600 px-1.5 py-0.5 tracking-wider font-semibold uppercase">
-                      {photo.exif.format}
-                    </span>
-                  </div>
+                <div className="col-span-2">
+                  <p className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase mb-1">Camera</p>
+                  <p className="text-neutral-700 dark:text-neutral-300 font-mono text-xs">{photo.exif.camera} <span className="text-red-600 text-[9px] ml-1">{photo.exif.format}</span></p>
                 </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Settings className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase">OPTICAL GLASS</p>
-                    <p className="text-sm text-neutral-800 dark:text-neutral-200 mt-0.5 font-mono">{photo.exif.lens}</p>
-                  </div>
+                <div className="col-span-2">
+                  <p className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase mb-1">Lens</p>
+                  <p className="text-neutral-700 dark:text-neutral-300 font-mono text-xs">{photo.exif.lens}</p>
                 </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 bg-neutral-200 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Cpu className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-mono text-neutral-400 dark:text-neutral-500 uppercase">EXPOSURE FORMULA</p>
-                    <p className="text-sm text-green-600 mt-0.5 font-mono">{photo.exif.exposure}</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-mono">Focal Length: {photo.exif.focalLength}</p>
-                  </div>
+                <div className="col-span-2">
+                  <p className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase mb-1">Exposure</p>
+                  <p className="text-green-600 font-mono text-xs">{photo.exif.exposure} <span className="text-neutral-400 ml-2">{photo.exif.focalLength}</span></p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-12 pt-6 border-t border-neutral-300 dark:border-neutral-700 flex flex-col gap-3">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handleShare}
-                  className="flex items-center gap-2 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
-                >
-                  {copied ? <Check className="w-5 h-5 text-green-600" /> : <Share2 className="w-5 h-5" />}
-                  <span>{copied ? 'LINK COPIED' : 'SHARE'}</span>
-                </button>
-                <button
-                  onClick={handleLike}
-                  disabled={loadingLikes}
-                  className="flex items-center gap-2 font-mono text-[10px] transition-colors cursor-pointer disabled:opacity-50"
-                  style={{ color: liked ? '#ef4444' : undefined }}
-                >
-                  <Heart className={`w-5 h-5 transition-transform duration-200 ${liked ? 'scale-110' : ''}`} fill={liked ? '#ef4444' : 'none'} />
-                  <span className={liked ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'}>{likes > 0 ? likes : 'LIKE'}</span>
-                </button>
-                <button
-                  onClick={handleDownloadClick}
-                  disabled={downloading}
-                  className="flex items-center gap-2 font-mono text-[10px] text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>{downloading ? 'PROCESSING...' : 'DOWNLOAD'}</span>
-                </button>
-              </div>
+            {/* 操作栏：分享、点赞、下载 */}
+            <div className="flex items-center justify-center gap-6 py-4 border-y border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#2a2a2a]">
+              <button
+                onClick={handleShare}
+                className="flex flex-col items-center gap-1 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
+              >
+                {copied ? <Check className="w-5 h-5 text-green-600" /> : <Share2 className="w-5 h-5" />}
+                <span className="font-mono text-[9px] uppercase">{copied ? 'Copied' : 'Share'}</span>
+              </button>
+              <button
+                onClick={handleLike}
+                disabled={loadingLikes}
+                className="flex flex-col items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
+                style={{ color: liked ? '#ef4444' : undefined }}
+              >
+                <Heart className={`w-5 h-5 transition-transform duration-200 ${liked ? 'scale-110' : ''}`} fill={liked ? '#ef4444' : 'none'} />
+                <span className={`font-mono text-[9px] uppercase ${liked ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'}`}>{likes > 0 ? likes : 'Like'}</span>
+              </button>
+              <button
+                onClick={handleDownloadClick}
+                disabled={downloading}
+                className="flex flex-col items-center gap-1 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <Download className="w-5 h-5" />
+                <span className="font-mono text-[9px] uppercase">{downloading ? 'Wait' : 'Download'}</span>
+              </button>
+              <button
+                onClick={toggleAutoPlay}
+                className={`flex flex-col items-center gap-1 transition-colors cursor-pointer ${autoPlay ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'}`}
+              >
+                {autoPlay ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                <span className="font-mono text-[9px] uppercase">{autoPlay ? 'Pause' : 'Auto'}</span>
+              </button>
+            </div>
+
+            {/* 底部：版权 */}
+            <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-black/20">
               <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
                 <Eye className="w-3 h-3 text-red-600" />
-                <span>ALL RIGHTS RESERVED ZHOU©️</span>
+                <span>ALL RIGHTS RESERVED ZHOU©</span>
               </div>
-              <p className="text-[10px] text-neutral-400 dark:text-neutral-500 leading-normal font-sans">
-                除摄影作品集演示外，任何未经周亭燃本人书面授权的商业、非商业下载、改编、印刷及数字再分发均为非法。
-              </p>
             </div>
           </div>
+          )}
         </div>
 
         <AnimatePresence>
