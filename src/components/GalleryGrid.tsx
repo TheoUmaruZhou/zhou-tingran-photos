@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useMemo, useCallback, useRef, type ReactNode } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect, type ReactNode } from 'react';
 import { motion, useInView } from 'motion/react';
 import { LayoutGrid, Grid3X3, StretchHorizontal, SlidersHorizontal, MapPin, Calendar, Info, ChevronDown } from 'lucide-react';
 import { Category, Project, Photograph } from '../types';
@@ -13,6 +13,7 @@ import AnimatedCounter from './AnimatedCounter';
 interface GalleryGridProps {
   initialCategory?: Category | null;
   initialProject?: Project | null;
+  activePhotoId?: string | null;
   onPhotoClick: (photo: Photograph, filteredList: Photograph[]) => void;
 }
 
@@ -39,6 +40,7 @@ function ScrollRevealItem({ index, children }: { index: number; children: ReactN
 export default function GalleryGrid({
   initialCategory = null,
   initialProject = null,
+  activePhotoId = null,
   onPhotoClick,
 }: GalleryGridProps) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(initialCategory);
@@ -84,6 +86,24 @@ export default function GalleryGrid({
   const visiblePhotographs = useMemo(() => {
     return filteredPhotographs.slice(0, page * itemsPerPage);
   }, [filteredPhotographs, page]);
+
+  useEffect(() => {
+    if (!activePhotoId) return;
+
+    const activeIndex = filteredPhotographs.findIndex((photo) => photo.id === activePhotoId);
+    if (activeIndex === -1) return;
+
+    const targetPage = Math.ceil((activeIndex + 1) / itemsPerPage);
+    if (targetPage > page) {
+      setPage(targetPage);
+      return;
+    }
+
+    const targetCard = document.querySelector(`[data-photo-id="${activePhotoId}"]`) as HTMLElement | null;
+    if (targetCard) {
+      targetCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [activePhotoId, filteredPhotographs, page]);
 
   const hasMore = filteredPhotographs.length > page * itemsPerPage;
 
@@ -295,12 +315,15 @@ export default function GalleryGrid({
           >
             {visiblePhotographs.map((photo, index) => (
               <ScrollRevealItem key={photo.id} index={index}>
-                <div
+                <motion.div
                   onClick={() => onPhotoClick(photo, filteredPhotographs)}
+                  whileHover={{ y: -4 }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 20 }}
                   className="group cursor-pointer flex flex-col justify-start relative select-none"
+                  data-photo-id={photo.id}
                   data-cursor-enlarge
                 >
-                  <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto">
+                  <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto rounded-[2px] border border-transparent transition-colors duration-300 group-hover:border-neutral-400/70 dark:group-hover:border-neutral-600">
                     {!loadedImages.has(photo.id) && (
                       <div
                         className="absolute inset-0 skeleton-shimmer"
@@ -311,7 +334,9 @@ export default function GalleryGrid({
                     )}
                     <motion.div
                       layoutId={`photo-${photo.id}`}
-                      className={`w-full h-full object-cover group-hover:scale-[1.03] transition-all duration-1000 ease-out ${loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'}`}
+                      whileHover={{ scale: 1.04 }}
+                      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                      className={`w-full h-full object-cover ${loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'}`}
                       style={{
                         aspectRatio: colsMode === 1 ? '16/9' : photo.aspectRatio === '1:1' ? '1/1' : photo.aspectRatio === '3:4' ? '3/4' : '4/3',
                       }}
@@ -326,7 +351,12 @@ export default function GalleryGrid({
                       />
                     </motion.div>
 
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a] dark:from-[#ebebeb] via-[#1a1a1a]/30 dark:via-[#ebebeb]/30 to-transparent p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end min-h-[50%]">
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                      transition={{ duration: 0.25, ease: 'easeOut' }}
+                      className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a] dark:from-[#ebebeb] via-[#1a1a1a]/30 dark:via-[#ebebeb]/30 to-transparent p-5 opacity-0 flex flex-col justify-end min-h-[50%]"
+                    >
                       <span className="font-mono text-[10px] text-red-500 tracking-wider">
                         {photo.exif.format}
                       </span>
@@ -347,7 +377,7 @@ export default function GalleryGrid({
                           {photo.year}
                         </span>
                       </div>
-                    </div>
+                    </motion.div>
 
                     <div className="absolute top-3 right-3 font-mono text-[9px] bg-[#1a1a1a]/75 dark:bg-[#ebebeb]/75 backdrop-blur px-2 py-1 text-neutral-400 dark:text-neutral-500 opacity-60 group-hover:opacity-100 transition-opacity">
                       {photo.exif.camera.split(' ')[0]} • {photo.exif.focalLength}
@@ -356,7 +386,7 @@ export default function GalleryGrid({
 
                   <div className="mt-4 flex flex-col justify-start px-1">
                     <div className="flex justify-between items-baseline">
-                      <h5 className="font-display font-extrabold text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] group-hover:translate-x-1 transition-transform duration-300 uppercase tracking-tight text-sm">
+                      <h5 className="font-display font-extrabold text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] transition-colors duration-300 uppercase tracking-tight text-sm">
                         {photo.title}
                       </h5>
                       <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
@@ -386,7 +416,7 @@ export default function GalleryGrid({
                       </div>
                     )}
                   </div>
-                </div>
+                </motion.div>
               </ScrollRevealItem>
             ))}
           </div>

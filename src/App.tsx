@@ -249,6 +249,7 @@ export default function App() {
               <GalleryGrid
                 initialCategory={selectedCategory}
                 initialProject={selectedProject}
+                activePhotoId={activePhoto?.id ?? null}
                 onPhotoClick={handleOpenLightbox}
               />
             </motion.div>
@@ -282,15 +283,17 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {activePhoto && (
-        <Lightbox
-          photo={activePhoto}
-          filteredList={activePhotoList}
-          onClose={handleCloseLightbox}
-          onNext={handleNextPhoto}
-          onPrev={handlePrevPhoto}
-        />
-      )}
+      <AnimatePresence mode="wait">
+        {activePhoto && (
+          <Lightbox
+            photo={activePhoto}
+            filteredList={activePhotoList}
+            onClose={handleCloseLightbox}
+            onNext={handleNextPhoto}
+            onPrev={handlePrevPhoto}
+          />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showScrollTop && (

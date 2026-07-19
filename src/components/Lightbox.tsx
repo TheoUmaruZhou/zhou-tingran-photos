@@ -38,6 +38,8 @@ export default function Lightbox({
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
+  const [transitionKey, setTransitionKey] = useState(0);
 
   // 全屏切换函数
   const toggleFullscreen = useCallback(() => {
@@ -90,12 +92,10 @@ export default function Lightbox({
     const isRightSwipe = distance < -minSwipeDistance;
 
     if (isLeftSwipe) {
-      stopAutoPlay();
-      onNext();
+      handleNextWithDirection();
     }
     if (isRightSwipe) {
-      stopAutoPlay();
-      onPrev();
+      handlePrevWithDirection();
     }
   };
 
@@ -357,6 +357,20 @@ export default function Lightbox({
     }
   }, []);
 
+  const handlePrevWithDirection = useCallback(() => {
+    setSlideDirection(-1);
+    setTransitionKey((prev) => prev + 1);
+    stopAutoPlay();
+    onPrev();
+  }, [onPrev, stopAutoPlay]);
+
+  const handleNextWithDirection = useCallback(() => {
+    setSlideDirection(1);
+    setTransitionKey((prev) => prev + 1);
+    stopAutoPlay();
+    onNext();
+  }, [onNext, stopAutoPlay]);
+
   const startAutoPlay = useCallback(() => {
     stopAutoPlay();
     timerRef.current = setInterval(() => {
@@ -393,13 +407,11 @@ export default function Lightbox({
       if (!previewOpen) {
         if (e.key === 'ArrowRight') {
           setAutoPlay(false);
-          stopAutoPlay();
-          onNext();
+          handleNextWithDirection();
         }
         if (e.key === 'ArrowLeft') {
           setAutoPlay(false);
-          stopAutoPlay();
-          onPrev();
+          handlePrevWithDirection();
         }
         if (e.key === ' ') {
           e.preventDefault();
@@ -420,15 +432,26 @@ export default function Lightbox({
   const totalCount = filteredList.length;
 
   return (
-    <AnimatePresence>
-      <div
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={`lightbox-${photo.id}`}
         id="lightbox-viewport"
-        className={`fixed inset-0 z-50 overflow-y-auto ${isFullscreen ? 'bg-black' : 'bg-[#ebebeb]/98 dark:bg-[#1a1a1a]/98'} flex flex-col justify-start transition-colors duration-300`}
+        initial={{ opacity: 0, scale: 0.98, y: 14 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.86, y: 30 }}
+        transition={{ duration: 0.62, ease: [0.16, 1, 0.3, 1] }}
+        className={`fixed inset-0 z-50 overflow-x-hidden overflow-y-auto ${isFullscreen ? 'bg-black' : 'bg-[#ebebeb]/98 dark:bg-[#1a1a1a]/98'} flex flex-col justify-start transition-colors duration-300`}
       >
         {/* 顶部栏 - 全屏时隐藏 */}
         {!isFullscreen && (
           <>
-            <div className="w-full flex items-center justify-between px-4 md:px-6 py-3 border-b border-neutral-200 dark:border-neutral-800 bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 sticky top-0 z-10 shrink-0">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full flex items-center justify-between px-4 md:px-6 py-3 border-b border-neutral-200 dark:border-neutral-800 bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 sticky top-0 z-10 shrink-0"
+            >
               <div className="flex items-center gap-3 font-mono text-xs text-neutral-500 dark:text-neutral-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
                 <span className="text-[10px]">
@@ -437,34 +460,45 @@ export default function Lightbox({
               </div>
 
               <div className="flex items-center gap-2">
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.94 }}
                   onClick={toggleFullscreen}
                   className="p-2 text-neutral-400 dark:text-neutral-500 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer rounded"
                   aria-label="全屏查看"
                 >
                   <Maximize2 className="w-4 h-4" />
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   id="lightbox-close-btn"
+                  whileTap={{ scale: 0.92 }}
                   onClick={() => { setAutoPlay(false); stopAutoPlay(); onClose(); }}
                   className="p-2 text-neutral-400 dark:text-neutral-500 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer rounded"
                 >
                   <X className="w-4 h-4" />
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
 
             {/* 进度条 */}
-            <div className="w-full h-[2px] bg-neutral-200 dark:bg-neutral-800">
-              <div
-                className="h-full bg-red-600 transition-all duration-300 ease-out"
-                style={{ width: `${((currentIndex + 1) / totalCount) * 100}%` }}
+            <div className="w-full h-[2px] bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${((currentIndex + 1) / totalCount) * 100}%` }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="h-full bg-red-600"
               />
             </div>
           </>
         )}
 
-        <div className={`flex-1 w-full ${isFullscreen ? '' : 'max-w-8xl'} mx-auto flex flex-col lg:flex-row items-stretch select-none`}>
+        <motion.div
+          key={`viewport-${photo.id}-${transitionKey}`}
+          initial={{ x: slideDirection * 120, opacity: 0, scale: 0.96 }}
+          animate={{ x: 0, opacity: 1, scale: 1 }}
+          exit={{ x: -slideDirection * 120, opacity: 0, scale: 0.98 }}
+          transition={{ duration: 0.56, ease: [0.16, 1, 0.3, 1] }}
+          className={`flex-1 w-full ${isFullscreen ? '' : 'max-w-8xl'} mx-auto flex flex-col lg:flex-row items-stretch select-none`}
+        >
           <div
             className={`flex-1 relative ${isFullscreen ? 'bg-black' : 'bg-neutral-300'} flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-4 md:p-8'} min-h-[50vh] lg:min-h-0`}
             onTouchStart={handleTouchStart}
@@ -475,42 +509,56 @@ export default function Lightbox({
 
             {/* 左侧切换按钮 - 仅电脑端显示，全屏时隐藏 */}
             {!isFullscreen && (
-              <button
-                onClick={() => { stopAutoPlay(); onPrev(); }}
+              <motion.button
+                initial={{ opacity: 0, x: -14 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ x: -4, scale: 1.04 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePrevWithDirection}
                 className="hidden lg:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
                 aria-label="上一张图片"
               >
                 <ChevronLeft className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
-              </button>
+              </motion.button>
             )}
 
             {/* 右侧切换按钮 - 仅电脑端显示，全屏时隐藏 */}
             {!isFullscreen && (
-              <button
-                onClick={() => { stopAutoPlay(); onNext(); }}
+              <motion.button
+                initial={{ opacity: 0, x: 14 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ x: 4, scale: 1.04 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleNextWithDirection}
                 className="hidden lg:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-sm rounded-full transition-all duration-200 z-10 group"
                 aria-label="下一张图片"
               >
                 <ChevronRight className="w-5 h-5 text-white/70 group-hover:text-white transition-colors" />
-              </button>
+              </motion.button>
             )}
 
-            <motion.div
-              key={photo.id}
-              layoutId={`photo-${photo.id}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.3 } }}
-              transition={{ layout: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }}
-              className={`${isFullscreen ? 'max-w-full max-h-full' : 'max-w-full max-h-[75vh] lg:max-h-[82vh]'} relative`}
-            >
-              <img
-                src={photo.imageUrl}
-                alt={photo.title}
-                className={`${isFullscreen ? 'max-w-full max-h-[100vh]' : 'max-w-full max-h-[75vh] lg:max-h-[82vh]'} object-contain shadow-2xl mx-auto`}
-                referrerPolicy="no-referrer"
-              />
-            </motion.div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={photo.id}
+                layoutId={`photo-${photo.id}`}
+                initial={{ opacity: 0, x: slideDirection * 100, scale: 0.95, y: 18, filter: 'blur(12px)' }}
+                animate={{ opacity: 1, x: 0, scale: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, x: -slideDirection * 90, scale: 0.97, y: 10, filter: 'blur(8px)' }}
+                transition={{ duration: 0.52, ease: [0.16, 1, 0.3, 1] }}
+                className={`${isFullscreen ? 'max-w-full max-h-full' : 'max-w-full max-h-[75vh] lg:max-h-[82vh]'} relative`}
+              >
+                <img
+                  src={photo.imageUrl}
+                  alt={photo.title}
+                  className={`${isFullscreen ? 'max-w-full max-h-[100vh]' : 'max-w-full max-h-[75vh] lg:max-h-[82vh]'} object-contain shadow-2xl mx-auto`}
+                  referrerPolicy="no-referrer"
+                />
+              </motion.div>
+            </AnimatePresence>
 
             {/* 全屏模式下的切换按钮 */}
             {isFullscreen && (
@@ -543,7 +591,14 @@ export default function Lightbox({
 
           {/* 右侧信息栏 - 全屏时隐藏 */}
           {!isFullscreen && (
-          <div className="w-full lg:w-[380px] bg-[#f5f5f5] dark:bg-[#252525] lg:border-l border-neutral-200 dark:border-neutral-800 flex flex-col overflow-y-auto shrink-0 border-t border-neutral-200 dark:border-neutral-800 lg:border-t-0">
+          <motion.aside
+            key={`info-${photo.id}`}
+            initial={{ opacity: 0, x: 34, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, x: 24, filter: 'blur(4px)' }}
+            transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
+            className="w-full lg:w-[380px] bg-[#f5f5f5] dark:bg-[#252525] lg:border-l border-neutral-200 dark:border-neutral-800 flex flex-col overflow-y-auto shrink-0 border-t border-neutral-200 dark:border-neutral-800 lg:border-t-0"
+          >
             {/* 头部：标题区 */}
             <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
               <div className="flex items-center justify-between mb-3">
@@ -635,9 +690,9 @@ export default function Lightbox({
                 除摄影作品集演示外，任何未经周亭燃本人书面授权的商业、非商业下载、改编、印刷及数字再分发均为非法。
               </p>
             </div>
-          </div>
+          </motion.aside>
           )}
-        </div>
+        </motion.div>
 
         <AnimatePresence>
           {previewOpen && previewUrl && (
@@ -708,7 +763,7 @@ export default function Lightbox({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </AnimatePresence>
   );
 }
