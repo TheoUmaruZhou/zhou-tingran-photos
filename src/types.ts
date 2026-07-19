@@ -17,6 +17,7 @@ export enum Project {
   UrbanBorders = 'urban-borders',
   TuGuan = 'tu-guan',
   DailyMoments = 'daily-moments',
+  LivingDiary = 'living-diary',
 }
 
 export enum VideoCategory {

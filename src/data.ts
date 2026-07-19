@@ -3358,6 +3358,13 @@ export const PROJECTS_INFO: Record<Project, ProjectInfo> = {
     background: '日常纪实摄影项目',
     duration: '2024 - 2026',
   },
+  'living-diary': {
+    nameZh: '生灵日记',
+    nameEn: 'Living Diary',
+    intro: '生命的故事，万物有灵',
+    background: '动物与自然生态摄影项目',
+    duration: '2024 - 2026',
+  },
 };
 
 // 视频分类信息
