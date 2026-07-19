@@ -121,6 +121,13 @@ export default function HomeHero({
       time: '2024 – 2026',
       image: '/images/专题-碎隅光景/看.webp',
     },
+    {
+      id: Project.LivingDiary,
+      num: 'P.06',
+      name: '生灵日记 / Living Diary',
+      time: '2024 – 2026',
+      image: '/images/专题-生灵日记/喵.webp',
+    },
   ];
 
   return (
