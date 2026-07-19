@@ -21,14 +21,20 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
     return () => timers.forEach(clearTimeout);
   }, [onComplete]);
 
+  const handleClick = () => {
+    setPhase('done');
+    setTimeout(() => onComplete(), 100);
+  };
+
   return (
     <AnimatePresence>
       {phase !== 'done' && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
-          className="fixed inset-0 z-[100] bg-[#0a0a0a] flex flex-col items-center justify-center"
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[100] bg-[#0a0a0a] flex flex-col items-center justify-center cursor-pointer"
+          onClick={handleClick}
         >
           <motion.div
             initial={{ scaleX: 0 }}
@@ -86,12 +92,16 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: phase === 'text2' ? 0.6 : 0 }}
-            transition={{ duration: 0.4 }}
-            className="absolute bottom-12 font-mono text-[9px] tracking-[0.3em] text-neutral-600 uppercase"
+            animate={{ opacity: 0.5 }}
+            transition={{ duration: 0.4, delay: 1 }}
+            className="absolute bottom-12 font-mono text-[10px] tracking-[0.2em] text-neutral-500 uppercase"
           >
-            © 2026
+            点击屏幕跳过
           </motion.div>
+
+          <div className="absolute bottom-6 font-mono text-[9px] tracking-[0.3em] text-neutral-600 uppercase">
+            © 2026
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

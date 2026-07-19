@@ -26,7 +26,12 @@ export default function App() {
   const [activePhoto, setActivePhoto] = useState<Photograph | null>(null);
   const [activePhotoList, setActivePhotoList] = useState<Photograph[]>([]);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [splashDone, setSplashDone] = useState(() => sessionStorage.getItem('splash_shown') === 'true');
+  const [splashDone, setSplashDone] = useState(() => {
+    // 如果是通过分享链接访问，跳过开屏动画
+    const params = new URLSearchParams(window.location.search);
+    const hasPhotoParam = params.get('photo') !== null;
+    return hasPhotoParam || sessionStorage.getItem('splash_shown') === 'true';
+  });
 
   const handleSplashComplete = useCallback(() => {
     setSplashDone(true);
@@ -105,7 +110,10 @@ export default function App() {
     }
   }, [activeTab]);
 
+  // 处理分享链接 - 在开屏动画完成后执行
   useEffect(() => {
+    if (!splashDone) return;
+
     const params = new URLSearchParams(window.location.search);
     const photoId = params.get('photo');
     if (photoId) {
@@ -117,7 +125,7 @@ export default function App() {
         window.history.replaceState({}, '', window.location.pathname);
       }
     }
-  }, []);
+  }, [splashDone]);
 
   useEffect(() => {
     const handleScroll = () => {
