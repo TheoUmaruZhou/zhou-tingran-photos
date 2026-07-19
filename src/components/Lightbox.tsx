@@ -163,28 +163,69 @@ export default function Lightbox({
         return null;
       }
 
-      const size = Math.max(img.width, img.height) + 800;
+      // 根据图片比例动态计算画布大小
+      const aspectRatio = img.width / img.height;
+      const padding = 800; // 边距和装饰空间
+
+      let canvasW: number;
+      let canvasH: number;
+
+      if (aspectRatio <= 0.75) {
+        // 竖向图片 - 需要更高的画布
+        canvasW = img.width + padding;
+        canvasH = img.height + padding + 250;
+      } else {
+        // 横向图片(3:2)和1:1比例 - 使用原来的正方形画布逻辑
+        canvasW = Math.max(img.width, img.height) + padding;
+        canvasH = canvasW;
+      }
+
       const canvas = document.createElement('canvas');
-      canvas.width = size;
-      canvas.height = size;
+      canvas.width = canvasW;
+      canvas.height = canvasH;
       const ctx = canvas.getContext('2d')!;
 
       // 背景渐变效果
-      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      const gradient = ctx.createLinearGradient(0, 0, canvasW, canvasH);
       gradient.addColorStop(0, '#f8f7f4');
       gradient.addColorStop(1, '#ebe9e4');
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, size, size);
+      ctx.fillRect(0, 0, canvasW, canvasH);
 
       // 图片区域
-      const margin = size * 0.08;
-      const maxImgW = size - margin * 2;
-      const maxImgH = size * 1.4;
+      const margin = canvasW * 0.08;
+      const maxImgW = canvasW - margin * 2;
+
+      // 根据图片比例调整最大高度限制
+      let maxImgH: number;
+      if (aspectRatio <= 0.75) {
+        // 竖向图片 - 预留底部信息空间
+        maxImgH = canvasH - 250 - margin;
+      } else if (aspectRatio >= 1.4) {
+        // 横向图片 (3:2等) - 使用原来的逻辑
+        maxImgH = canvasH * 1.4;
+      } else {
+        // 1:1比例或接近正方形
+        maxImgH = canvasH * 1.2;
+      }
+
       const scale = Math.min(maxImgW / img.width, maxImgH / img.height);
       const drawW = img.width * scale;
       const drawH = img.height * scale;
-      const imgX = (size - drawW) / 2;
-      const imgY = size * 0.12;
+      const imgX = (canvasW - drawW) / 2;
+
+      // 图片起始Y位置 - 根据比例调整
+      let imgY: number;
+      if (aspectRatio <= 0.75) {
+        // 竖向图片 - 顶部开始
+        imgY = canvasH * 0.08;
+      } else if (aspectRatio >= 1.4) {
+        // 横向图片 (3:2等) - 原来的位置
+        imgY = canvasH * 0.12;
+      } else {
+        // 1:1比例 - 在画布中垂直居中
+        imgY = (canvasH - drawH) / 2;
+      }
 
       // 图片边框装饰
       ctx.strokeStyle = '#d4d0c8';
@@ -199,52 +240,54 @@ export default function Lightbox({
       // 绘制图片
       ctx.drawImage(img, imgX, imgY, drawW, drawH);
 
-      // 底部信息区
-      const bottomStart = imgY + drawH + 40;
-      const bottomEnd = size - size * 0.05;
-      const bottomSpace = bottomEnd - bottomStart;
-      let curY = bottomStart + bottomSpace * 0.08;
+      // 底部信息区 - 仅横向图片(3:2)显示
+      if (aspectRatio >= 1.4) {
+        const bottomStart = imgY + drawH + 40;
+        const bottomEnd = canvasH - canvasH * 0.05;
+        const bottomSpace = bottomEnd - bottomStart;
+        let curY = bottomStart + bottomSpace * 0.08;
 
-      // 装饰线
-      ctx.strokeStyle = '#c4b8a8';
-      ctx.lineWidth = 1;
-      const decorLineW = size * 0.12;
-      ctx.beginPath();
-      ctx.moveTo(size / 2 - decorLineW, curY);
-      ctx.lineTo(size / 2 + decorLineW, curY);
-      ctx.stroke();
+        // 装饰线
+        ctx.strokeStyle = '#c4b8a8';
+        ctx.lineWidth = 1;
+        const decorLineW = canvasW * 0.12;
+        ctx.beginPath();
+        ctx.moveTo(canvasW / 2 - decorLineW, curY);
+        ctx.lineTo(canvasW / 2 + decorLineW, curY);
+        ctx.stroke();
 
-      // 装饰点
-      ctx.fillStyle = '#8b7355';
-      ctx.beginPath();
-      ctx.arc(size / 2, curY, 4, 0, Math.PI * 2);
-      ctx.fill();
+        // 装饰点
+        ctx.fillStyle = '#8b7355';
+        ctx.beginPath();
+        ctx.arc(canvasW / 2, curY, 4, 0, Math.PI * 2);
+        ctx.fill();
 
-      curY += size * 0.05;
+        curY += canvasW * 0.05;
 
-      // 作品标题 - 使用更艺术化的字体风格
-      ctx.fillStyle = '#2c2416';
-      ctx.font = `italic bold ${Math.round(size * 0.028)}px "Georgia", "Times New Roman", serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      ctx.fillText(photo.title.toUpperCase(), size / 2, curY);
-      curY += size * 0.055;
+        // 作品标题 - 使用更艺术化的字体风格
+        ctx.fillStyle = '#2c2416';
+        ctx.font = `italic bold ${Math.round(canvasW * 0.028)}px "Georgia", "Times New Roman", serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(photo.title.toUpperCase(), canvasW / 2, curY);
+        curY += canvasW * 0.055;
 
-      // 副标题
-      ctx.fillStyle = '#6b5d4d';
-      ctx.font = `${Math.round(size * 0.016)}px "Georgia", "Times New Roman", serif`;
-      ctx.fillText(`— ${photo.year} —`, size / 2, curY);
-      curY += size * 0.06;
+        // 副标题
+        ctx.fillStyle = '#6b5d4d';
+        ctx.font = `${Math.round(canvasW * 0.016)}px "Georgia", "Times New Roman", serif`;
+        ctx.fillText(`— ${photo.year} —`, canvasW / 2, curY);
+        curY += canvasW * 0.06;
 
-      // 设备信息
-      ctx.fillStyle = '#888078';
-      ctx.font = `300 ${Math.round(size * 0.014)}px "Georgia", "Times New Roman", serif`;
-      ctx.fillText(`${photo.exif.camera}  ·  ${photo.exif.lens}`, size / 2, curY);
-      curY += size * 0.04;
+        // 设备信息
+        ctx.fillStyle = '#888078';
+        ctx.font = `300 ${Math.round(canvasW * 0.014)}px "Georgia", "Times New Roman", serif`;
+        ctx.fillText(`${photo.exif.camera}  ·  ${photo.exif.lens}`, canvasW / 2, curY);
+        curY += canvasW * 0.04;
 
-      ctx.fillStyle = '#9a9288';
-      ctx.font = `${Math.round(size * 0.013)}px "Georgia", "Times New Roman", serif`;
-      ctx.fillText(`${photo.exif.exposure}  ·  ${photo.exif.focalLength}`, size / 2, curY);
+        ctx.fillStyle = '#9a9288';
+        ctx.font = `${Math.round(canvasW * 0.013)}px "Georgia", "Times New Roman", serif`;
+        ctx.fillText(`${photo.exif.exposure}  ·  ${photo.exif.focalLength}`, canvasW / 2, curY);
+      }
 
       return canvas.toDataURL('image/jpeg', 0.95);
     } catch {

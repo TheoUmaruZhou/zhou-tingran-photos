@@ -38,7 +38,7 @@ export default function VideoGallery({ initialCategory = null }: VideoGalleryPro
   };
 
   return (
-    <section className="w-full px-6 md:px-12 py-8">
+    <section className="w-full max-w-7xl mx-auto px-6 md:px-12 py-8">
       {/* 标题 */}
       <div className="mb-12">
         <span className="font-mono text-xs text-red-600 tracking-widest uppercase">

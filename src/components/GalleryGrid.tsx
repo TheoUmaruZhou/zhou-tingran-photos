@@ -75,9 +75,9 @@ export default function GalleryGrid({
         return p.project === selectedProject;
       }
       if (selectedCategory) {
-        return p.category === selectedCategory && !p.project;
+        return p.category === selectedCategory;
       }
-      return !p.project;
+      return true; // 全部作品：显示所有照片
     });
   }, [selectedCategory, selectedProject]);
 
