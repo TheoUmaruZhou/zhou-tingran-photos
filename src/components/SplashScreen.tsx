@@ -17,7 +17,20 @@ function shufflePhotos<T>(items: T[]) {
 
 export default function SplashScreen({ onComplete }: SplashScreenProps) {
   const [phase, setPhase] = useState<'line-in' | 'text1' | 'text1-out' | 'text2' | 'text2-out' | 'done'>('line-in');
-  const previewPhotos = useMemo(() => shufflePhotos(PHOTOGRAPHS).slice(0, 16), []);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const previewPhotos = useMemo(() => shufflePhotos(PHOTOGRAPHS).slice(0, isMobile ? 6 : 16), [isMobile]);
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -52,13 +65,19 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
                 <motion.div
                   key={`${photo.id}-${index}`}
                   initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{
+                  animate={isMobile ? {
+                    opacity: phase === 'text1-out' || phase === 'text2' || phase === 'text2-out' ? 0 : 0.9,
+                    scale: 1,
+                  } : {
                     opacity: phase === 'text1-out' || phase === 'text2' || phase === 'text2-out' ? 0 : 0.9,
                     scale: [1, 1.03, 1],
                     x: index % 2 === 0 ? [0, 4, 0] : [0, -4, 0],
                     y: index % 3 === 0 ? [0, -10, 0] : [0, 10, 0],
                   }}
-                  transition={{
+                  transition={isMobile ? {
+                    duration: 0.35,
+                    ease: [0.16, 1, 0.3, 1],
+                  } : {
                     duration: 6 + (index % 4) * 0.5,
                     repeat: Infinity,
                     ease: 'easeInOut',
