@@ -629,8 +629,11 @@ export default function Lightbox({
             <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-black/20">
               <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
                 <Eye className="w-3 h-3 text-red-600" />
-                <span>ALL RIGHTS RESERVED ZHOU©</span>
+                <span>ALL RIGHTS RESERVED ZHOU©️</span>
               </div>
+              <p className="text-[10px] text-neutral-400 dark:text-neutral-500 leading-normal font-sans mt-2">
+                除摄影作品集演示外，任何未经周亭燃本人书面授权的商业、非商业下载、改编、印刷及数字再分发均为非法。
+              </p>
             </div>
           </div>
           )}
