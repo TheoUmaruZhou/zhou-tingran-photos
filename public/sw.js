@@ -5,14 +5,17 @@ const urlsToCache = [
   '/manifest.json',
 ];
 
+const isDevRequest = (url) => {
+  return url.includes('/@vite/') || url.includes('/src/') || url.includes('/node_modules/') || url.includes('/@react-refresh');
+};
+
 // 安装 Service Worker
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log('Opened cache');
+      return cache.addAll(urlsToCache);
+    })
   );
   self.skipWaiting();
 });
@@ -36,45 +39,38 @@ self.addEventListener('activate', (event) => {
 
 // 拦截网络请求
 self.addEventListener('fetch', (event) => {
-  // 只缓存 GET 请求
   if (event.request.method !== 'GET') {
     return;
   }
 
+  const requestUrl = new URL(event.request.url);
+  const isSameOrigin = requestUrl.origin === self.location.origin;
+  const isDevAsset = isSameOrigin && isDevRequest(requestUrl.href);
+
+  if (!isSameOrigin || isDevAsset) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // 如果缓存中有响应，返回缓存的响应
-        if (response) {
-          return response;
+    (async () => {
+      const cachedResponse = await caches.match(event.request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      try {
+        const networkResponse = await fetch(event.request);
+        if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(event.request, responseToCache);
         }
 
-        // 否则，从网络获取
-        return fetch(event.request).then((response) => {
-          // 检查是否是有效的响应
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-
-          // 克隆响应，因为响应是流，只能使用一次
-          const responseToCache = response.clone();
-
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              // 只缓存同源的请求
-              if (event.request.url.startsWith(self.location.origin)) {
-                cache.put(event.request, responseToCache);
-              }
-            });
-
-          return response;
-        });
-      })
-      .catch(() => {
-        // 离线时返回缓存的首页
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html');
-        }
-      })
+        return networkResponse;
+      } catch {
+        const fallback = await caches.match('/index.html');
+        return fallback || new Response('Offline', { status: 503, statusText: 'Offline' });
+      }
+    })()
   );
 });
