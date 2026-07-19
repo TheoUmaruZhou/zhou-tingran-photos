@@ -493,10 +493,10 @@ export default function Lightbox({
 
         <motion.div
           key={`viewport-${photo.id}-${transitionKey}`}
-          initial={{ x: slideDirection * 120, opacity: 0, scale: 0.96 }}
-          animate={{ x: 0, opacity: 1, scale: 1 }}
-          exit={{ x: -slideDirection * 120, opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.56, ease: [0.16, 1, 0.3, 1] }}
+          initial={isMobile ? { x: slideDirection * 120, opacity: 0 } : { x: slideDirection * 140, opacity: 0, scale: 0.97 }}
+          animate={isMobile ? { x: 0, opacity: 1 } : { x: 0, opacity: 1, scale: 1 }}
+          exit={isMobile ? { x: -slideDirection * 120, opacity: 0 } : { x: -slideDirection * 140, opacity: 0, scale: 0.98 }}
+          transition={isMobile ? { duration: 0.4, ease: [0.16, 1, 0.3, 1] } : { duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className={`flex-1 w-full ${isFullscreen ? '' : 'max-w-8xl'} mx-auto flex flex-col lg:flex-row items-stretch select-none`}
         >
           <div
@@ -545,10 +545,10 @@ export default function Lightbox({
               <motion.div
                 key={photo.id}
                 layoutId={`photo-${photo.id}`}
-                initial={{ opacity: 0, x: slideDirection * 100, scale: 0.95, y: 18, filter: 'blur(12px)' }}
-                animate={{ opacity: 1, x: 0, scale: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, x: -slideDirection * 90, scale: 0.97, y: 10, filter: 'blur(8px)' }}
-                transition={{ duration: 0.52, ease: [0.16, 1, 0.3, 1] }}
+                initial={isMobile ? { opacity: 0, x: slideDirection * 80, scale: 0.965, y: 14, filter: 'blur(10px)' } : { opacity: 0, x: slideDirection * 120, scale: 0.95, y: 22, filter: 'blur(14px)' }}
+                animate={isMobile ? { opacity: 1, x: 0, scale: 1, y: 0, filter: 'blur(0px)' } : { opacity: 1, x: 0, scale: 1, y: 0, filter: 'blur(0px)' }}
+                exit={isMobile ? { opacity: 0, x: -slideDirection * 70, scale: 0.98, y: 8, filter: 'blur(6px)' } : { opacity: 0, x: -slideDirection * 110, scale: 0.97, y: 12, filter: 'blur(9px)' }}
+                transition={isMobile ? { duration: 0.32, ease: [0.16, 1, 0.3, 1] } : { duration: 0.58, ease: [0.16, 1, 0.3, 1] }}
                 className={`${isFullscreen ? 'max-w-full max-h-full' : 'max-w-full max-h-[75vh] lg:max-h-[82vh]'} relative`}
               >
                 <img
