@@ -184,8 +184,8 @@ export default function HomeHero({
       <section ref={featuredRef} className="relative w-full max-w-[1400px] mx-auto px-4 md:px-12 mb-28">
         <div className="relative aspect-[21/9] w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 group" data-cursor-enlarge>
           <motion.img
-            src="/images/未标题-3.webp"
-            alt="Chen Lu Featured"
+            src="/images/专题-生灵日记/喵.webp"
+            alt="喵 / Meow"
             style={{ y: parallaxY }}
             className="w-full h-full object-cover group-hover:scale-[1.02] transition-all duration-1000 ease-out scale-110"
             referrerPolicy="no-referrer"
