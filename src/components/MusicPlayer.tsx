@@ -21,13 +21,26 @@ export default function MusicPlayer() {
   const [volume, setVolume] = useState(0.3);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPlayBallPaused, setIsPlayBallPaused] = useState(false);
+  const [isVolumeBallPaused, setIsVolumeBallPaused] = useState(false);
   const [position, setPosition] = useState({ x: 24, y: 24 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  
+  const [hasDragged, setHasDragged] = useState(false);
+  const dragStartPosition = useRef({ x: 0, y: 0 });
+
+  // 用于手动控制动画角度
+  const playBallAngleRef = useRef(0);
+  const volumeBallAngleRef = useRef(180); // 音量球初始从180度开始
+  const playBallPausedRef = useRef(false);
+  const volumeBallPausedRef = useRef(false);
+  const animationIdRef = useRef<number | null>(null);
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const playBallRef = useRef<HTMLButtonElement>(null);
+  const volumeBallContainerRef = useRef<HTMLDivElement>(null); // 音量球容器（包含按钮和滑块）
 
   useEffect(() => {
     if (audioRef.current) {
@@ -35,16 +48,77 @@ export default function MusicPlayer() {
     }
   }, [volume, isMuted]);
 
+  // 手动控制动画 - 使用requestAnimationFrame
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const animate = () => {
+      // 更新播放球角度
+      if (!playBallPausedRef.current) {
+        playBallAngleRef.current = (playBallAngleRef.current + 0.9) % 360;
+        if (playBallRef.current) {
+          const angle = playBallAngleRef.current;
+          playBallRef.current.style.transform = `rotate(${angle}deg) translateX(55px) rotate(${-angle}deg)`;
+        }
+      }
+
+      // 更新音量球容器角度（包含按钮和滑块）- 整体旋转
+      if (!volumeBallPausedRef.current) {
+        volumeBallAngleRef.current = (volumeBallAngleRef.current + 0.9) % 360;
+        if (volumeBallContainerRef.current) {
+          const angle = volumeBallAngleRef.current;
+          // 容器直接旋转，内部元素通过 CSS 定位在圆周上
+          volumeBallContainerRef.current.style.transform = `rotate(${angle}deg)`;
+        }
+      }
+
+      animationIdRef.current = requestAnimationFrame(animate);
+    };
+
+    animationIdRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+      }
+    };
+  }, [isExpanded]);
+
+  // 点击外部区域关闭
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!isExpanded) return;
+      if (!containerRef.current) return;
+      
+      if (!containerRef.current.contains(e.target as Node)) {
+        setIsExpanded(false);
+        setShowVolumeSlider(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isExpanded]);
+
   // 拖拽处理
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging) return;
       
+      // 检查是否真正拖动了（移动超过5px才算拖动）
+      const dx = e.clientX - dragStartPosition.current.x;
+      const dy = e.clientY - dragStartPosition.current.y;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        setHasDragged(true);
+      }
+      
       const newX = window.innerWidth - e.clientX - dragOffset.x;
       const newY = window.innerHeight - e.clientY - dragOffset.y;
       
-      const maxX = window.innerWidth - 80;
-      const maxY = window.innerHeight - 80;
+      const maxX = window.innerWidth - 100;
+      const maxY = window.innerHeight - 100;
       
       setPosition({
         x: Math.max(0, Math.min(newX, maxX)),
@@ -69,11 +143,15 @@ export default function MusicPlayer() {
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!buttonRef.current) return;
-    
+
+    // 记录起始位置，用于判断是否真正拖动
+    dragStartPosition.current = { x: e.clientX, y: e.clientY };
+    setHasDragged(false);
+
     const rect = buttonRef.current.getBoundingClientRect();
     const offsetX = rect.right - e.clientX;
     const offsetY = rect.bottom - e.clientY;
-    
+
     setDragOffset({ x: offsetX, y: offsetY });
     setIsDragging(true);
   };
@@ -101,17 +179,44 @@ export default function MusicPlayer() {
     setIsMuted(false);
   };
 
-  const handleButtonClick = () => {
-    if (isDragging) return;
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // 如果是拖动操作，不触发点击展开
+    if (hasDragged) return;
     setIsExpanded(!isExpanded);
     setShowVolumeSlider(false);
   };
 
+  // 播放球悬停处理 - 独立控制
+  const handlePlayBallMouseEnter = () => {
+    playBallPausedRef.current = true;
+    setIsPlayBallPaused(true);
+  };
+
+  const handlePlayBallMouseLeave = () => {
+    playBallPausedRef.current = false;
+    setIsPlayBallPaused(false);
+  };
+
+  // 音量球悬停处理 - 独立控制
+  const handleVolumeBallMouseEnter = () => {
+    volumeBallPausedRef.current = true;
+    setIsVolumeBallPaused(true);
+    setShowVolumeSlider(true);
+  };
+
+  const handleVolumeBallMouseLeave = () => {
+    volumeBallPausedRef.current = false;
+    setIsVolumeBallPaused(false);
+    setShowVolumeSlider(false);
+  };
+
   return (
-    <div 
+    <div
+      ref={containerRef}
       className="fixed z-50"
-      style={{ 
-        right: `${position.x}px`, 
+      style={{
+        right: `${position.x}px`,
         bottom: `${position.y}px`,
         cursor: isDragging ? 'grabbing' : 'grab'
       }}
@@ -126,21 +231,20 @@ export default function MusicPlayer() {
 
       {/* 动态圆球容器 */}
       {isExpanded && (
-        <div className="absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2 w-10 h-10">
+        <div className="absolute bottom-1/2 right-1/2 translate-x-1/2 translate-y-1/2 w-10 h-10 pointer-events-none">
           {/* 播放圆球 - 围绕主按钮旋转 */}
-          <div
-            className={`absolute inset-0 ${isPaused ? '' : 'animate-orbit-play'}`}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
+          <div className="absolute inset-0">
             <button
+              ref={playBallRef}
               onClick={togglePlay}
-              className={`absolute w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors ${
-                isPlaying 
-                  ? 'bg-red-700 text-white' 
+              onMouseEnter={handlePlayBallMouseEnter}
+              onMouseLeave={handlePlayBallMouseLeave}
+              className={`absolute w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors pointer-events-auto ${
+                isPlaying
+                  ? 'bg-red-700 text-white'
                   : 'bg-neutral-600 text-white hover:bg-neutral-500'
               }`}
-              style={{ transform: 'translate(40px, -10px)' }}
+              style={{ transform: 'rotate(0deg) translateX(55px) rotate(0deg)' }}
               title={isPlaying ? '暂停' : '播放'}
             >
               {isPlaying ? (
@@ -151,18 +255,14 @@ export default function MusicPlayer() {
             </button>
           </div>
 
-          {/* 音量圆球 - 围绕主按钮旋转 */}
+          {/* 音量圆球 + 滑块容器 - 围绕主按钮旋转 */}
           <div
-            className={`absolute inset-0 ${isPaused ? '' : 'animate-orbit-volume'}`}
-            onMouseEnter={() => {
-              setIsPaused(true);
-              setShowVolumeSlider(true);
-            }}
-            onMouseLeave={() => {
-              setIsPaused(false);
-              setShowVolumeSlider(false);
-            }}
+            ref={volumeBallContainerRef}
+            className="absolute inset-0 pointer-events-auto"
+            onMouseEnter={handleVolumeBallMouseEnter}
+            onMouseLeave={handleVolumeBallMouseLeave}
           >
+            {/* 音量球按钮 - 在圆周上（半径55px） */}
             <button
               onClick={toggleMute}
               className={`absolute w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors ${
@@ -170,7 +270,7 @@ export default function MusicPlayer() {
                   ? 'bg-neutral-700 text-neutral-400'
                   : 'bg-neutral-600 text-white hover:bg-neutral-500'
               }`}
-              style={{ transform: 'translate(-40px, -10px)' }}
+              style={{ left: 'calc(50% + 55px - 18px)', top: 'calc(50% - 18px)' }}
               title={isMuted ? '取消静音' : '静音'}
             >
               {isMuted ? (
@@ -180,9 +280,12 @@ export default function MusicPlayer() {
               )}
             </button>
 
-            {/* 音量滑块 */}
+            {/* 音量滑块 - 紧挨着音量球 */}
             {showVolumeSlider && (
-              <div className="absolute left-[-100px] top-[-5px] bg-neutral-800/95 backdrop-blur-sm p-2 rounded-lg shadow-lg border border-neutral-700">
+              <div
+                className="absolute bg-neutral-800/95 backdrop-blur-sm px-2 py-1.5 rounded-lg shadow-lg border border-neutral-700"
+                style={{ left: 'calc(50% + 55px - 75px)', top: 'calc(50% - 10px)' }}
+              >
                 <input
                   type="range"
                   min="0"
@@ -190,7 +293,7 @@ export default function MusicPlayer() {
                   step="0.01"
                   value={isMuted ? 0 : volume}
                   onChange={handleVolumeChange}
-                  className="w-20 h-1 bg-neutral-600 rounded-lg appearance-none cursor-pointer accent-red-700"
+                  className="w-14 h-1 bg-neutral-600 rounded-lg appearance-none cursor-pointer accent-red-700"
                   style={{ writingMode: 'horizontal-tb' }}
                 />
               </div>
@@ -219,32 +322,6 @@ export default function MusicPlayer() {
       {isPlaying && !isExpanded && (
         <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-700 rounded-full animate-pulse" />
       )}
-
-      {/* CSS动画 */}
-      <style>{`
-        @keyframes orbit-play {
-          0% {
-            transform: rotate(0deg) translateX(55px) rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg) translateX(55px) rotate(-360deg);
-          }
-        }
-        @keyframes orbit-volume {
-          0% {
-            transform: rotate(180deg) translateX(55px) rotate(-180deg);
-          }
-          100% {
-            transform: rotate(540deg) translateX(55px) rotate(-540deg);
-          }
-        }
-        .animate-orbit-play {
-          animation: orbit-play 4s linear infinite;
-        }
-        .animate-orbit-volume {
-          animation: orbit-volume 4s linear infinite;
-        }
-      `}</style>
     </div>
   );
 }
