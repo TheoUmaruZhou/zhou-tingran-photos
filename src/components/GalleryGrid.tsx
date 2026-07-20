@@ -323,7 +323,12 @@ export default function GalleryGrid({
                   data-photo-id={photo.id}
                   data-cursor-enlarge
                 >
-                  <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto rounded-[2px] border border-transparent transition-colors duration-300 group-hover:border-neutral-400/70 dark:group-hover:border-neutral-600">
+                  <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto rounded-[2px] border border-transparent transition-all duration-300 group-hover:border-red-600/50 dark:group-hover:border-red-500/50 group-hover:shadow-xl group-hover:shadow-red-600/10">
+                    {/* 左上角装饰角标 */}
+                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    {/* 右下角装饰角标 */}
+                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                     {!loadedImages.has(photo.id) && (
                       <div
                         className="absolute inset-0 skeleton-shimmer"
@@ -334,7 +339,7 @@ export default function GalleryGrid({
                     )}
                     <motion.div
                       layoutId={`photo-${photo.id}`}
-                      whileHover={{ scale: 1.04 }}
+                      whileHover={{ scale: 1.08 }}
                       transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
                       className={`w-full h-full object-cover ${loadedImages.has(photo.id) ? 'opacity-100' : 'opacity-0'}`}
                       style={{
@@ -352,12 +357,13 @@ export default function GalleryGrid({
                     </motion.div>
 
                     <motion.div
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                      transition={{ duration: 0.25, ease: 'easeOut' }}
-                      className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a] dark:from-[#ebebeb] via-[#1a1a1a]/30 dark:via-[#ebebeb]/30 to-transparent p-5 opacity-0 flex flex-col justify-end min-h-[50%]"
+                      initial={{ opacity: 0, y: 10 }}
+                      whileHover={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeOut' }}
+                      className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a] dark:from-[#ebebeb] via-[#1a1a1a]/50 dark:via-[#ebebeb]/50 to-transparent p-5 opacity-0 flex flex-col justify-end min-h-[55%]"
                     >
-                      <span className="font-mono text-[10px] text-red-500 tracking-wider">
+                      <span className="font-mono text-[10px] text-red-500 tracking-wider flex items-center gap-1">
+                        <span className="w-1 h-1 bg-red-500 rounded-full animate-pulse" />
                         {photo.exif.format}
                       </span>
                       <h4 className="text-lg font-display font-black text-white uppercase mt-0.5 tracking-tight">
@@ -369,17 +375,17 @@ export default function GalleryGrid({
 
                       <div className="flex items-center gap-4 mt-3 pt-3 border-t border-neutral-600 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
                         <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
+                          <MapPin className="w-3 h-3 text-red-500" />
                           {photo.location}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Calendar className="w-3 h-3 text-neutral-500 dark:text-neutral-400" />
+                          <Calendar className="w-3 h-3 text-red-500" />
                           {photo.year}
                         </span>
                       </div>
                     </motion.div>
 
-                    <div className="absolute top-3 right-3 font-mono text-[9px] bg-[#1a1a1a]/75 dark:bg-[#ebebeb]/75 backdrop-blur px-2 py-1 text-neutral-400 dark:text-neutral-500 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute top-3 right-3 font-mono text-[9px] bg-[#1a1a1a]/80 dark:bg-[#ebebeb]/80 backdrop-blur px-2 py-1 text-neutral-400 dark:text-neutral-500 opacity-60 group-hover:opacity-100 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
                       {photo.exif.camera.split(' ')[0]} • {photo.exif.focalLength}
                     </div>
                   </div>

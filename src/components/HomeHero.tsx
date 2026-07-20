@@ -231,29 +231,34 @@ export default function HomeHero({
               key={row.index}
               id={`cat-row-${row.category}`}
               onClick={() => onNavigateToCategory(row.category)}
-              className="group py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-[#e0e0e0] dark:hover:bg-[#2a2a2a] transition-all duration-300 px-2"
+              className="group py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-[#e0e0e0] dark:hover:bg-[#2a2a2a] transition-all duration-300 px-2 relative overflow-hidden"
             >
+              {/* 左侧红线指示器 */}
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-600 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
+
               <div className="flex items-center gap-6 md:gap-12 mb-4 md:mb-0">
-                <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500 tracking-wider group-hover:text-red-600 transition-colors">
+                <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500 tracking-wider group-hover:text-red-600 group-hover:scale-110 transition-all duration-300">
                   {row.index}
                 </span>
-                
+
                 <div>
-                  <h4 className="text-2xl md:text-4xl lg:text-5xl font-display font-extrabold group-hover:translate-x-2 transition-transform duration-500 uppercase tracking-tight text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb]">
+                  <h4 className="text-2xl md:text-4xl lg:text-5xl font-display font-extrabold group-hover:translate-x-4 transition-transform duration-500 uppercase tracking-tight text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] relative">
                     {row.title}
+                    {/* 标题下方渐变线 */}
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-transparent group-hover:w-full transition-all duration-500" />
                   </h4>
-                  <p className="text-sm font-mono text-neutral-500 dark:text-neutral-400 mt-1 md:mt-2 group-hover:text-red-600 transition-colors">
+                  <p className="text-sm font-mono text-neutral-500 dark:text-neutral-400 mt-1 md:mt-2 group-hover:text-red-600 group-hover:translate-x-2 transition-all duration-300">
                     {row.subtitle} — {row.desc}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 font-mono text-xs tracking-wider text-neutral-400 dark:text-neutral-500 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] transition-colors">
-                <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span className="opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                   VIEW GALLERY
                 </span>
-                <div className="w-8 h-8 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center group-hover:border-[#1a1a1a] dark:group-hover:border-[#ebebeb] transition-colors">
-                  <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 transition-transform" />
+                <div className="w-8 h-8 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center group-hover:border-red-600 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                  <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </div>
             </div>
@@ -283,34 +288,53 @@ export default function HomeHero({
                 key={proj.id}
                 id={`proj-card-${proj.id}`}
                 onClick={() => onNavigateToProject(proj.id)}
-                className="group relative bg-[#e8e8e8] dark:bg-[#222222] overflow-hidden cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-300 flex flex-col border border-neutral-300 dark:border-neutral-700 h-full"
+                className="group relative bg-[#e8e8e8] dark:bg-[#222222] overflow-hidden cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-500 flex flex-col border border-neutral-300 dark:border-neutral-700 h-full hover:shadow-2xl hover:shadow-neutral-400/30 dark:hover:shadow-black/50 hover:-translate-y-1"
                 data-cursor-enlarge
               >
+                {/* 图片容器 */}
                 <div className="aspect-[4/3] w-full overflow-hidden relative">
+                  {/* 图片 */}
                   <img
                     src={proj.image}
                     alt={proj.name}
-                    className="w-full h-full object-cover grayscale brightness-90 group-hover:scale-105 group-hover:brightness-100 group-hover:grayscale-0 transition-all duration-700"
+                    className="w-full h-full object-cover grayscale brightness-90 group-hover:scale-110 group-hover:brightness-100 group-hover:grayscale-0 transition-all duration-700"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute top-4 left-4 font-mono text-[10px] bg-[#1a1a1a]/80 dark:bg-[#ebebeb]/80 backdrop-blur text-white px-2 py-1 tracking-widest">
+
+                  {/* 渐变遮罩 */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* 项目编号标签 */}
+                  <div className="absolute top-4 left-4 font-mono text-[10px] bg-[#1a1a1a]/80 dark:bg-[#ebebeb]/80 backdrop-blur text-white px-2 py-1 tracking-widest group-hover:bg-red-600 group-hover:scale-110 transition-all duration-300">
                     {proj.num}
+                  </div>
+
+                  {/* 悬停时显示的时间标签 */}
+                  <div className="absolute bottom-4 left-4 right-4 font-mono text-[10px] text-white/90 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                    {proj.time}
                   </div>
                 </div>
 
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                {/* 信息区域 */}
+                <div className="p-6 flex-1 flex flex-col justify-between relative">
+                  {/* 标题下划线动画 */}
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+
                   <div>
-                    <h4 className="text-xl font-display font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] transition-colors">
+                    <h4 className="text-xl font-display font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] transition-colors relative inline-block">
                       {proj.name}
+                      {/* 标题下划线 */}
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-500" />
                     </h4>
-                    <p className="text-xs font-mono text-neutral-500 dark:text-neutral-400 mt-2">
+                    <p className="text-xs font-mono text-neutral-500 dark:text-neutral-400 mt-2 opacity-100 group-hover:opacity-70 transition-opacity">
                       Duration: {proj.time}
                     </p>
                   </div>
 
+                  {/* 底部进入按钮 */}
                   <div className="flex items-center gap-1 font-mono text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-red-600 transition-colors mt-8 pt-4 border-t border-neutral-300 dark:border-neutral-700">
-                    <span>Enter Field Research</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform" />
+                    <span className="group-hover:translate-x-0.5 transition-transform">Enter Field Research</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-2 transition-transform duration-300" />
                   </div>
                 </div>
               </div>
