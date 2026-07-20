@@ -320,16 +320,16 @@ export default function App() {
 
       <footer id="app-footer-minimal" className="w-full py-16 bg-[#ddd] dark:bg-[#111] border-t border-neutral-300 dark:border-neutral-700 font-mono text-xs text-neutral-600 dark:text-neutral-400 transition-colors duration-300 relative overflow-hidden">
         {/* 背景装饰线 */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-30" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-red-700 to-transparent opacity-30" />
 
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div className="flex flex-col gap-2 group">
-            <span className="font-display font-black text-[#1a1a1a] dark:text-[#ebebeb] text-lg tracking-tighter uppercase group-hover:text-red-600 transition-colors duration-300">
+            <span className="font-display font-black text-[#1a1a1a] dark:text-[#ebebeb] text-lg tracking-tighter uppercase group-hover:text-red-700 transition-colors duration-300">
               Theodore©️zhou
             </span>
             <p className="text-[10px] text-neutral-500 dark:text-neutral-500 uppercase relative">
               MAPPING TIME, ENVIRONMENT & HUMAN BOUNDARIES SINCE 2023
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-500" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-700 group-hover:w-full transition-all duration-500" />
             </p>
           </div>
 
@@ -339,10 +339,10 @@ export default function App() {
                 setActiveTab('home');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="hover:text-red-600 transition-colors text-left relative group"
+              className="hover:text-red-700 transition-colors text-left relative group"
             >
               <span>[ HOME ]</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-700 group-hover:w-full transition-all duration-300" />
             </button>
             <button
               onClick={() => {
@@ -351,35 +351,35 @@ export default function App() {
                 setActiveTab('works');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="hover:text-red-600 transition-colors text-left relative group"
+              className="hover:text-red-700 transition-colors text-left relative group"
             >
               <span>[ WORKS ]</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-700 group-hover:w-full transition-all duration-300" />
             </button>
             <button
               onClick={() => {
                 setActiveTab('videos');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="hover:text-red-600 transition-colors text-left relative group"
+              className="hover:text-red-700 transition-colors text-left relative group"
             >
               <span>[ VIDEOS ]</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-700 group-hover:w-full transition-all duration-300" />
             </button>
             <button
               onClick={() => {
                 setActiveTab('about');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="hover:text-red-600 transition-colors text-left relative group"
+              className="hover:text-red-700 transition-colors text-left relative group"
             >
               <span>[ ABOUT ]</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-700 group-hover:w-full transition-all duration-300" />
             </button>
           </div>
 
           <div className="text-left md:text-right font-mono text-[10px] text-neutral-500 dark:text-neutral-500">
-            <p className="hover:text-red-600 transition-colors duration-300">DESIGN INSPIRED BY SHANGHAIS BRUTALIST SPACE AGENCIES</p>
+            <p className="hover:text-red-700 transition-colors duration-300">DESIGN INSPIRED BY SHANGHAIS BRUTALIST SPACE AGENCIES</p>
             <p className="mt-1">©️ 2026 THEO PHOTOGRAPHY ZHOU</p>
           </div>
         </div>

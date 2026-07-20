@@ -29,7 +29,7 @@ function EnvelopeCard({ msg, idx, isNew }: { msg: Message; idx: number; isNew: b
         <div className="absolute top-0 right-0 h-0 border-r-[100px] border-r-[#e8e0d0] dark:border-r-[#3a3530] border-l-[100px] border-l-transparent border-b-[40px] border-b-transparent opacity-40" />
         <div className="relative p-4 pt-8">
           <div className="absolute top-2 left-1/2 -translate-x-1/2">
-            <div className="w-5 h-5 rounded-full bg-red-600/70 shadow-sm border border-red-700/50" />
+            <div className="w-5 h-5 rounded-full bg-red-700/70 shadow-sm border border-red-700/50" />
           </div>
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[9px] text-neutral-500 dark:text-neutral-400 tracking-wider uppercase">
@@ -131,7 +131,7 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
         >
           <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-600 bg-[#f5f0e8] dark:bg-[#2a2520] shrink-0">
             <div className="flex items-center gap-3">
-              <Stamp className="w-5 h-5 text-red-600" />
+              <Stamp className="w-5 h-5 text-red-700" />
               <div>
                 <h2 className="font-display font-extrabold text-lg tracking-tight text-[#1a1a1a] dark:text-[#ebebeb] uppercase">
                   Guestbook
@@ -142,7 +142,7 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="font-mono text-[10px] text-red-600">({messages.length})</span>
+              <span className="font-mono text-[10px] text-red-700">({messages.length})</span>
               <button
                 onClick={onClose}
                 className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
@@ -195,7 +195,7 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
                 className="fixed left-1/2 -translate-x-1/2 bottom-32 z-50 pointer-events-none"
               >
                 <div className="w-24 h-16 bg-[#f5f0e8] dark:bg-[#2a2520] border border-neutral-300 dark:border-neutral-600 shadow-xl flex items-center justify-center">
-                  <div className="w-0 h-0 border-l-[24px] border-l-transparent border-r-[24px] border-r-transparent border-b-[16px] border-b-red-600/60" />
+                  <div className="w-0 h-0 border-l-[24px] border-l-transparent border-r-[24px] border-r-transparent border-b-[16px] border-b-red-700/60" />
                 </div>
               </motion.div>
             )}
@@ -209,7 +209,7 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your Name / 你的名字"
-                  className="sm:w-48 bg-transparent border-b border-neutral-300 dark:border-neutral-600 focus:border-red-600 outline-none py-3 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 transition-colors shrink-0"
+                  className="sm:w-48 bg-transparent border-b border-neutral-300 dark:border-neutral-600 focus:border-red-700 outline-none py-3 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 transition-colors shrink-0"
                   required
                 />
                 <textarea
@@ -217,7 +217,7 @@ export default function Guestbook({ isOpen, onClose }: GuestbookProps) {
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Write something here..."
                   rows={2}
-                  className="flex-1 bg-transparent border border-neutral-200 dark:border-neutral-600 focus:border-red-600 outline-none p-3 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 resize-none transition-colors leading-relaxed"
+                  className="flex-1 bg-transparent border border-neutral-200 dark:border-neutral-600 focus:border-red-700 outline-none p-3 text-sm font-sans text-[#1a1a1a] dark:text-[#ebebeb] placeholder:text-neutral-400 dark:placeholder:text-neutral-500 resize-none transition-colors leading-relaxed"
                   style={{
                     backgroundImage: 'repeating-linear-gradient(transparent, transparent 27px, rgba(0,0,0,0.05) 28px)',
                     backgroundAttachment: 'local',

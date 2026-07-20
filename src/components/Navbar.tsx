@@ -53,29 +53,36 @@ export default function Navbar({
   return (
     <nav id="app-navbar-main" className="w-full bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md sticky top-0 z-40 border-b border-neutral-300 dark:border-neutral-700 select-none transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+        {/* Logo */}
         <div
           id="navbar-brand-logo"
           onClick={() => handleNormalTabClick('home')}
-          className="cursor-pointer group flex items-baseline gap-2"
+          className="cursor-pointer group flex items-baseline gap-2 relative"
         >
-          <span className="font-display font-black text-2xl tracking-tighter text-[#1a1a1a] dark:text-[#ebebeb] group-hover:text-red-600 transition-colors uppercase">
+          <span className="font-display font-black text-2xl tracking-tighter text-[#1a1a1a] dark:text-[#ebebeb] group-hover:text-red-700 transition-colors uppercase">
             Theodore©
           </span>
-          <span className="font-mono text-[9px] text-neutral-500 dark:text-neutral-400 tracking-widest uppercase hidden md:inline">
+          <span className="font-mono text-[9px] text-neutral-500 dark:text-neutral-400 tracking-widest uppercase hidden md:inline group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
             LAND & TOPOGRAPHY ARCHIVE
           </span>
+          {/* 底部悬停线 */}
+          <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-700 group-hover:w-full transition-all duration-300" />
         </div>
 
-        <div className="hidden lg:flex items-center gap-8 text-xs font-mono tracking-wider">
+        {/* 导航链接 */}
+        <div className="hidden lg:flex items-center gap-6 text-xs font-mono tracking-wider">
+          {/* 首页 */}
           <button
             onClick={() => handleNormalTabClick('home')}
-            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase ${
-              activeTab === 'home' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
+            className={`cursor-pointer transition-all duration-200 uppercase relative group ${
+              activeTab === 'home' ? 'text-[#1a1a1a] dark:text-[#ebebeb]' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
             }`}
           >
-            Home / 首页
+            <span>Home / 首页</span>
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-700 transition-all duration-300 ${activeTab === 'home' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </button>
 
+          {/* 作品下拉 */}
           <div
             className="relative"
             onMouseEnter={() => setShowWorksDropdown(true)}
@@ -84,38 +91,47 @@ export default function Navbar({
             <button
               id="nav-works-dropdown-btn"
               onClick={() => handleCategoryClick(null)}
-              className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase flex items-center gap-1 py-4 ${
-                activeTab === 'works' && !selectedProject ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
+              className={`cursor-pointer transition-all duration-200 uppercase flex items-center gap-1.5 py-4 group ${
+                activeTab === 'works' && !selectedProject ? 'text-[#1a1a1a] dark:text-[#ebebeb]' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
               }`}
             >
-              Works / 作品分类
-              <span className={`w-1.5 h-1.5 rounded-full bg-red-600 transition-opacity ${selectedCategory ? 'opacity-100' : 'opacity-0'}`}></span>
+              <span>Works / 作品</span>
+              {selectedCategory && <span className="w-1.5 h-1.5 rounded-full bg-red-700" />}
+              <svg className={`w-3 h-3 transition-transform duration-200 ${showWorksDropdown ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+              <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-700 transition-all duration-300 ${(activeTab === 'works' && !selectedProject) ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </button>
 
             {showWorksDropdown && (
-              <div className="absolute top-12 left-0 w-56 bg-[#e0e0e0] dark:bg-[#2a2a2a] border border-neutral-300 dark:border-neutral-700 p-2 shadow-xl flex flex-col divide-y divide-neutral-300 dark:divide-neutral-700">
-                <button
-                  onClick={() => handleCategoryClick(null)}
-                  className="w-full text-left px-3 py-2 text-[10.5px] text-neutral-600 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all font-mono"
-                >
-                  ALL WORKS / 全部作品
-                </button>
-                {Object.values(Category).map((cat) => (
+              <div className="absolute top-full left-0 pt-2">
+                <div className="w-56 bg-white dark:bg-[#2a2a2a] rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-xl overflow-hidden">
                   <button
-                    key={cat}
-                    onClick={() => handleCategoryClick(cat)}
-                    className={`w-full text-left px-3 py-2 text-[10.5px] transition-all font-mono flex items-center justify-between ${
-                      selectedCategory === cat ? 'text-[#1a1a1a] dark:text-[#ebebeb] bg-neutral-200 dark:bg-neutral-800 font-bold' : 'text-neutral-600 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700'
+                    onClick={() => handleCategoryClick(null)}
+                    className={`w-full text-left px-4 py-3 text-xs transition-colors font-mono border-b border-neutral-100 dark:border-neutral-800 ${
+                      selectedCategory === null ? 'text-red-700 bg-red-50 dark:bg-red-900/20' : 'text-neutral-600 dark:text-neutral-400 hover:text-red-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/50'
                     }`}
                   >
-                    <span>{CATEGORIES_INFO[cat].nameZh}</span>
-                    <span className="text-neutral-400 dark:text-neutral-500 text-[9px]">{CATEGORIES_INFO[cat].nameEn}</span>
+                    全部作品
                   </button>
-                ))}
+                  {Object.values(Category).map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => handleCategoryClick(cat)}
+                      className={`w-full text-left px-4 py-3 text-xs transition-colors font-mono flex items-center justify-between ${
+                        selectedCategory === cat ? 'text-red-700 bg-red-50 dark:bg-red-900/20' : 'text-neutral-500 dark:text-neutral-400 hover:text-red-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/30'
+                      }`}
+                    >
+                      <span>{CATEGORIES_INFO[cat].nameZh}</span>
+                      <span className="text-neutral-400 dark:text-neutral-500 text-[10px]">{CATEGORIES_INFO[cat].nameEn}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
+          {/* 专题下拉 */}
           <div
             className="relative"
             onMouseEnter={() => setShowProjectsDropdown(true)}
@@ -124,61 +140,79 @@ export default function Navbar({
             <button
               id="nav-projects-dropdown-btn"
               onClick={() => handleProjectClick(Project.OldTowns)}
-              className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase flex items-center gap-1 py-4 ${
-                selectedProject ? 'text-red-600 font-bold' : 'text-neutral-500 dark:text-neutral-400'
+              className={`cursor-pointer transition-all duration-200 uppercase flex items-center gap-1.5 py-4 group ${
+                selectedProject ? 'text-red-700' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
               }`}
             >
-              Regional Projects / 区域专案
-              <span className={`w-1.5 h-1.5 rounded-full bg-red-600 transition-opacity ${selectedProject ? 'opacity-100' : 'opacity-0'}`}></span>
+              <span>Projects / 专题</span>
+              {selectedProject && <span className="w-1.5 h-1.5 rounded-full bg-red-700" />}
+              <svg className={`w-3 h-3 transition-transform duration-200 ${showProjectsDropdown ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+              <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-700 transition-all duration-300 ${selectedProject ? 'w-full' : 'w-0 group-hover:w-full'}`} />
             </button>
 
             {showProjectsDropdown && (
-              <div className="absolute top-12 left-0 w-64 bg-[#e0e0e0] dark:bg-[#2a2a2a] border border-neutral-300 dark:border-neutral-700 p-2 shadow-xl flex flex-col divide-y divide-neutral-300 dark:divide-neutral-700">
-                {Object.values(Project).map((proj) => (
-                  <button
-                    key={proj}
-                    onClick={() => handleProjectClick(proj)}
-                    className={`w-full text-left px-3 py-2 text-[10.5px] transition-all font-mono flex items-center justify-between ${
-                      selectedProject === proj ? 'text-red-600 bg-neutral-200 dark:bg-neutral-800 font-bold' : 'text-neutral-600 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] hover:bg-neutral-200 dark:hover:bg-neutral-700'
-                    }`}
-                  >
-                    <span>专题：{PROJECTS_INFO[proj].nameZh}</span>
-                    <span className="text-red-400 text-[9px] font-mono">{PROJECTS_INFO[proj].duration.split(' ')[0]}</span>
-                  </button>
-                ))}
+              <div className="absolute top-full left-0 pt-2">
+                <div className="w-60 bg-white dark:bg-[#2a2a2a] rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-xl overflow-hidden">
+                  {Object.values(Project).map((proj, index) => (
+                    <button
+                      key={proj}
+                      onClick={() => handleProjectClick(proj)}
+                      className={`w-full text-left px-4 py-3 text-xs transition-colors font-mono flex items-center justify-between ${
+                        selectedProject === proj ? 'text-red-700 bg-red-50 dark:bg-red-900/20' : 'text-neutral-500 dark:text-neutral-400 hover:text-red-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/30'
+                      } ${index > 0 ? 'border-t border-neutral-100 dark:border-neutral-800' : ''}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="w-5 h-5 bg-neutral-100 dark:bg-neutral-800 rounded flex items-center justify-center text-[9px] text-neutral-400">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                        {PROJECTS_INFO[proj].nameZh}
+                      </span>
+                      <span className="text-neutral-400 dark:text-neutral-500 text-[10px]">{PROJECTS_INFO[proj].duration.split(' ')[0]}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
 
+          {/* 视频 */}
           <button
             onClick={() => handleNormalTabClick('videos' as any)}
-            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase ${
-              activeTab === 'videos' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
+            className={`cursor-pointer transition-all duration-200 uppercase relative group flex items-center gap-1.5 ${
+              activeTab === 'videos' ? 'text-[#1a1a1a] dark:text-[#ebebeb]' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
             }`}
           >
-            Videos / 视频专栏
+            <span>Videos / 视频</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-red-700 animate-pulse" />
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-700 transition-all duration-300 ${activeTab === 'videos' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </button>
 
+          {/* 关于 */}
           <button
             onClick={() => handleNormalTabClick('about')}
-            className={`cursor-pointer transition-colors hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] uppercase ${
-              activeTab === 'about' ? 'text-[#1a1a1a] dark:text-[#ebebeb] font-bold' : 'text-neutral-500 dark:text-neutral-400'
+            className={`cursor-pointer transition-all duration-200 uppercase relative group ${
+              activeTab === 'about' ? 'text-[#1a1a1a] dark:text-[#ebebeb]' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'
             }`}
           >
-            About & Inquiries / 关于与联络
+            <span>About / 关于</span>
+            <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-700 transition-all duration-300 ${activeTab === 'about' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </button>
         </div>
 
-        <div className="hidden lg:flex items-center gap-2 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
-          <span>CALIBRATED / ZHOUTINGRAN_ONLINE</span>
-          <span className="text-neutral-300 dark:text-neutral-600">|</span>
+        {/* 右侧状态 */}
+        <div className="hidden lg:flex items-center gap-3 font-mono text-[9px] text-neutral-400 dark:text-neutral-500">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-200/50 dark:bg-neutral-800/50 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>ONLINE</span>
+          </div>
           <button
             onClick={toggleTheme}
-            className="p-1.5 text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb] transition-colors cursor-pointer"
-            title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            className="p-2 text-neutral-500 dark:text-neutral-400 hover:text-red-700 dark:hover:text-red-600 hover:bg-neutral-200 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200 cursor-pointer"
+            title={dark ? '切换到亮色模式' : '切换到暗色模式'}
           >
-            {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
         </div>
       </div>

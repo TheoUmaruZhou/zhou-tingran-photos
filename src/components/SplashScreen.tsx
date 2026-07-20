@@ -139,7 +139,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
                 opacity: phase === 'line-in' || phase === 'text1' ? 1 : 0,
               }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="w-28 h-[1px] bg-red-600 origin-center mb-8"
+              className="w-28 h-[1px] bg-red-700 origin-center mb-8"
             />
 
             <div className="h-24 flex items-center justify-center overflow-hidden px-6">
@@ -187,7 +187,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
                 opacity: phase === 'text2' || phase === 'text2-out' ? 1 : 0,
               }}
               transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-              className="w-28 h-[1px] bg-red-600 origin-center mt-8"
+              className="w-28 h-[1px] bg-red-700 origin-center mt-8"
             />
           </div>
 

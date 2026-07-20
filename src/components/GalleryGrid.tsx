@@ -142,7 +142,7 @@ export default function GalleryGrid({
       <div className="pt-8 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8">
-            <span className="font-mono text-xs text-red-600 tracking-widest block uppercase mb-3">
+            <span className="font-mono text-xs text-red-700 tracking-widest block uppercase mb-3">
               {!selectedCategory && !selectedProject
                 ? <>共计 <AnimatedCounter target={PHOTOGRAPHS.length} /> 幅被存贮底片</>
                 : headerDetails.meta}
@@ -178,7 +178,7 @@ export default function GalleryGrid({
             <div className="font-mono text-xs text-neutral-500 dark:text-neutral-400 uppercase">
               CHAMBER STATUS: CALIBRATED <br />
               ARCHIVE CODES: {filteredPhotographs.length} CAPTURES FOUND<br />
-              {hasMore && <span className="text-red-600">LOADING: {visiblePhotographs.length} / {filteredPhotographs.length}</span>}
+              {hasMore && <span className="text-red-700">LOADING: {visiblePhotographs.length} / {filteredPhotographs.length}</span>}
             </div>
             {selectedCategory || selectedProject ? (
               <button
@@ -238,8 +238,8 @@ export default function GalleryGrid({
                 }}
                 className={`font-mono text-xs px-3 py-1.5 transition-all cursor-pointer ${
                   active
-                    ? 'bg-red-600 text-white font-semibold'
-                    : 'bg-[#e0e0e0] dark:bg-[#2a2a2a] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-600 hover:text-red-600'
+                    ? 'bg-red-700 text-white font-semibold'
+                    : 'bg-[#e0e0e0] dark:bg-[#2a2a2a] text-neutral-600 dark:text-neutral-400 hover:bg-neutral-300 dark:hover:bg-neutral-600 hover:text-red-700'
                 }`}
               >
                 专题：{label.nameZh}
@@ -323,11 +323,11 @@ export default function GalleryGrid({
                   data-photo-id={photo.id}
                   data-cursor-enlarge
                 >
-                  <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto rounded-[2px] border border-transparent transition-all duration-300 group-hover:border-red-600/50 dark:group-hover:border-red-500/50 group-hover:shadow-xl group-hover:shadow-red-600/10">
+                  <div className="relative w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 aspect-[4/3] md:aspect-auto rounded-[2px] border border-transparent transition-all duration-300 group-hover:border-red-700/50 dark:group-hover:border-red-500/50 group-hover:shadow-xl group-hover:shadow-red-700/10">
                     {/* 左上角装饰角标 */}
-                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     {/* 右下角装饰角标 */}
-                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-red-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                     {!loadedImages.has(photo.id) && (
                       <div
@@ -385,7 +385,7 @@ export default function GalleryGrid({
                       </div>
                     </motion.div>
 
-                    <div className="absolute top-3 right-3 font-mono text-[9px] bg-[#1a1a1a]/80 dark:bg-[#ebebeb]/80 backdrop-blur px-2 py-1 text-neutral-400 dark:text-neutral-500 opacity-60 group-hover:opacity-100 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                    <div className="absolute top-3 right-3 font-mono text-[9px] bg-[#1a1a1a]/80 dark:bg-[#ebebeb]/80 backdrop-blur px-2 py-1 text-neutral-400 dark:text-neutral-500 opacity-60 group-hover:opacity-100 group-hover:bg-red-700 group-hover:text-white transition-all duration-300">
                       {photo.exif.camera.split(' ')[0]} • {photo.exif.focalLength}
                     </div>
                   </div>

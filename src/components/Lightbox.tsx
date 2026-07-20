@@ -453,7 +453,7 @@ export default function Lightbox({
               className="w-full flex items-center justify-between px-4 md:px-6 py-3 border-b border-neutral-200 dark:border-neutral-800 bg-[#ebebeb]/95 dark:bg-[#1a1a1a]/95 sticky top-0 z-10 shrink-0"
             >
               <div className="flex items-center gap-3 font-mono text-xs text-neutral-500 dark:text-neutral-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-red-700"></span>
                 <span className="text-[10px]">
                   {currentIndex + 1} / {totalCount}
                 </span>
@@ -485,7 +485,7 @@ export default function Lightbox({
                 initial={{ width: 0 }}
                 animate={{ width: `${((currentIndex + 1) / totalCount) * 100}%` }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="h-full bg-red-600"
+                className="h-full bg-red-700"
               />
             </div>
           </>
@@ -602,7 +602,7 @@ export default function Lightbox({
             {/* 头部：标题区 */}
             <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
               <div className="flex items-center justify-between mb-3">
-                <span className="font-mono text-[10px] text-red-600 tracking-widest uppercase font-semibold">
+                <span className="font-mono text-[10px] text-red-700 tracking-widest uppercase font-semibold">
                   {photo.project || photo.category || 'ARCHIVE'}
                 </span>
                 <span className="font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
@@ -632,7 +632,7 @@ export default function Lightbox({
                 </div>
                 <div className="col-span-2">
                   <p className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase mb-1">Camera</p>
-                  <p className="text-neutral-700 dark:text-neutral-300 font-mono text-xs">{photo.exif.camera} <span className="text-red-600 text-[9px] ml-1">{photo.exif.format}</span></p>
+                  <p className="text-neutral-700 dark:text-neutral-300 font-mono text-xs">{photo.exif.camera} <span className="text-red-700 text-[9px] ml-1">{photo.exif.format}</span></p>
                 </div>
                 <div className="col-span-2">
                   <p className="font-mono text-[9px] text-neutral-400 dark:text-neutral-500 uppercase mb-1">Lens</p>
@@ -661,7 +661,7 @@ export default function Lightbox({
                 style={{ color: liked ? '#ef4444' : undefined }}
               >
                 <Heart className={`w-5 h-5 transition-transform duration-200 ${liked ? 'scale-110' : ''}`} fill={liked ? '#ef4444' : 'none'} />
-                <span className={`font-mono text-[9px] uppercase ${liked ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'}`}>{likes > 0 ? likes : 'Like'}</span>
+                <span className={`font-mono text-[9px] uppercase ${liked ? 'text-red-700' : 'text-neutral-500 dark:text-neutral-400'}`}>{likes > 0 ? likes : 'Like'}</span>
               </button>
               <button
                 onClick={handleDownloadClick}
@@ -673,7 +673,7 @@ export default function Lightbox({
               </button>
               <button
                 onClick={toggleAutoPlay}
-                className={`flex flex-col items-center gap-1 transition-colors cursor-pointer ${autoPlay ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'}`}
+                className={`flex flex-col items-center gap-1 transition-colors cursor-pointer ${autoPlay ? 'text-red-700' : 'text-neutral-500 dark:text-neutral-400 hover:text-[#1a1a1a] dark:hover:text-[#ebebeb]'}`}
               >
                 {autoPlay ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                 <span className="font-mono text-[9px] uppercase">{autoPlay ? 'Pause' : 'Auto'}</span>
@@ -683,7 +683,7 @@ export default function Lightbox({
             {/* 底部：版权 */}
             <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-black/20">
               <div className="flex items-center gap-2 font-mono text-[10px] text-neutral-400 dark:text-neutral-500">
-                <Eye className="w-3 h-3 text-red-600" />
+                <Eye className="w-3 h-3 text-red-700" />
                 <span>ALL RIGHTS RESERVED ZHOU©️</span>
               </div>
               <p className="text-[10px] text-neutral-400 dark:text-neutral-500 leading-normal font-sans mt-2">
@@ -715,7 +715,7 @@ export default function Lightbox({
               >
                 <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-300">
                   <div className="flex items-center gap-3">
-                    <Download className="w-4 h-4 text-red-600" />
+                    <Download className="w-4 h-4 text-red-700" />
                     <span className="font-mono text-xs text-neutral-600 uppercase tracking-wider">Download Preview</span>
                   </div>
                   <button
@@ -750,7 +750,7 @@ export default function Lightbox({
                     </button>
                     <button
                       onClick={handleConfirmDownload}
-                      className="px-6 py-3 bg-red-600 text-white font-mono text-xs uppercase tracking-wider hover:bg-red-700 transition-colors cursor-pointer"
+                      className="px-6 py-3 bg-red-700 text-white font-mono text-xs uppercase tracking-wider hover:bg-red-700 transition-colors cursor-pointer"
                     >
                       <span className="flex items-center gap-2">
                         <Download className="w-4 h-4" />

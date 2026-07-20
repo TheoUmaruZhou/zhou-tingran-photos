@@ -140,7 +140,7 @@ export default function HomeHero({
           className="w-full"
         >
           <div className="flex items-center gap-2 mb-6 font-mono text-xs tracking-widest text-[#888]">
-            <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span>
+            <span className="w-1.5 h-1.5 bg-red-700 rounded-full animate-pulse"></span>
             ZHOU TING RAN PHOTOGRAPHY ARCHIVE
           </div>
 
@@ -234,10 +234,10 @@ export default function HomeHero({
               className="group py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between cursor-pointer hover:bg-[#e0e0e0] dark:hover:bg-[#2a2a2a] transition-all duration-300 px-2 relative overflow-hidden"
             >
               {/* 左侧红线指示器 */}
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-600 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-red-700 scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-top" />
 
               <div className="flex items-center gap-6 md:gap-12 mb-4 md:mb-0">
-                <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500 tracking-wider group-hover:text-red-600 group-hover:scale-110 transition-all duration-300">
+                <span className="font-mono text-xs text-neutral-400 dark:text-neutral-500 tracking-wider group-hover:text-red-700 group-hover:scale-110 transition-all duration-300">
                   {row.index}
                 </span>
 
@@ -245,9 +245,9 @@ export default function HomeHero({
                   <h4 className="text-2xl md:text-4xl lg:text-5xl font-display font-extrabold group-hover:translate-x-4 transition-transform duration-500 uppercase tracking-tight text-neutral-700 dark:text-neutral-300 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] relative">
                     {row.title}
                     {/* 标题下方渐变线 */}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-transparent group-hover:w-full transition-all duration-500" />
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-700 to-transparent group-hover:w-full transition-all duration-500" />
                   </h4>
-                  <p className="text-sm font-mono text-neutral-500 dark:text-neutral-400 mt-1 md:mt-2 group-hover:text-red-600 group-hover:translate-x-2 transition-all duration-300">
+                  <p className="text-sm font-mono text-neutral-500 dark:text-neutral-400 mt-1 md:mt-2 group-hover:text-red-700 group-hover:translate-x-2 transition-all duration-300">
                     {row.subtitle} — {row.desc}
                   </p>
                 </div>
@@ -257,7 +257,7 @@ export default function HomeHero({
                 <span className="opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                   VIEW GALLERY
                 </span>
-                <div className="w-8 h-8 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center group-hover:border-red-600 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                <div className="w-8 h-8 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center group-hover:border-red-700 group-hover:bg-red-700 group-hover:text-white transition-all duration-300">
                   <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function HomeHero({
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
             <div>
-              <span className="font-mono text-xs text-red-600 tracking-widest uppercase">
+              <span className="font-mono text-xs text-red-700 tracking-widest uppercase">
                 02 /专题项目 - ACTIVE ON-GOING SECTIONS
               </span>
               <h3 className="text-3xl md:text-5xl font-display font-extrabold tracking-tight mt-2 text-[#1a1a1a] dark:text-[#ebebeb] uppercase">
@@ -305,7 +305,7 @@ export default function HomeHero({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   {/* 项目编号标签 */}
-                  <div className="absolute top-4 left-4 font-mono text-[10px] bg-[#1a1a1a]/80 dark:bg-[#ebebeb]/80 backdrop-blur text-white px-2 py-1 tracking-widest group-hover:bg-red-600 group-hover:scale-110 transition-all duration-300">
+                  <div className="absolute top-4 left-4 font-mono text-[10px] bg-[#1a1a1a]/80 dark:bg-[#ebebeb]/80 backdrop-blur text-white px-2 py-1 tracking-widest group-hover:bg-red-700 group-hover:scale-110 transition-all duration-300">
                     {proj.num}
                   </div>
 
@@ -318,13 +318,13 @@ export default function HomeHero({
                 {/* 信息区域 */}
                 <div className="p-6 flex-1 flex flex-col justify-between relative">
                   {/* 标题下划线动画 */}
-                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-red-700 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
                   <div>
                     <h4 className="text-xl font-display font-bold text-neutral-800 dark:text-neutral-200 group-hover:text-[#1a1a1a] dark:group-hover:text-[#ebebeb] transition-colors relative inline-block">
                       {proj.name}
                       {/* 标题下划线 */}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-500" />
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-700 group-hover:w-full transition-all duration-500" />
                     </h4>
                     <p className="text-xs font-mono text-neutral-500 dark:text-neutral-400 mt-2 opacity-100 group-hover:opacity-70 transition-opacity">
                       Duration: {proj.time}
@@ -332,7 +332,7 @@ export default function HomeHero({
                   </div>
 
                   {/* 底部进入按钮 */}
-                  <div className="flex items-center gap-1 font-mono text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-red-600 transition-colors mt-8 pt-4 border-t border-neutral-300 dark:border-neutral-700">
+                  <div className="flex items-center gap-1 font-mono text-xs text-neutral-500 dark:text-neutral-400 group-hover:text-red-700 transition-colors mt-8 pt-4 border-t border-neutral-300 dark:border-neutral-700">
                     <span className="group-hover:translate-x-0.5 transition-transform">Enter Field Research</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-2 transition-transform duration-300" />
                   </div>

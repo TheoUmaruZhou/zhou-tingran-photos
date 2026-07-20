@@ -56,7 +56,7 @@ export default function AboutContact() {
   return (
     <div id="about-contact-section" className="w-full max-w-7xl mx-auto px-6 md:px-12 pb-32 transition-colors duration-300">
       <div className="pt-8 pb-16">
-        <span className="font-mono text-xs text-red-600 tracking-widest block uppercase mb-3">
+        <span className="font-mono text-xs text-red-700 tracking-widest block uppercase mb-3">
           ABOUT & CONTACT / 简介与联络
         </span>
         <h2 className="text-4xl md:text-7xl font-display font-black text-[#1a1a1a] dark:text-[#ebebeb] uppercase tracking-tight leading-none">
@@ -113,13 +113,13 @@ export default function AboutContact() {
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-neutral-400 dark:text-neutral-500 shrink-0" />
-                <a href="mailto:1532737473@qq.com" className="hover:text-red-600 transition-colors">
+                <a href="mailto:1532737473@qq.com" className="hover:text-red-700 transition-colors">
                   1532737473@qq.com
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <Instagram className="w-4 h-4 text-neutral-400 dark:text-neutral-500 shrink-0" />
-                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors">
+                <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-red-700 transition-colors">
                   抖音号：Theo.Umaru.Zhou 小红书：THEOUMARUZHOU
                 </a>
               </div>
@@ -162,7 +162,7 @@ export default function AboutContact() {
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 {sendError && (
-                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 text-xs text-red-600 font-mono">
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 text-xs text-red-700 font-mono">
                     发送失败，请稍后重试或直接发送邮件至 1532737473@qq.com
                   </div>
                 )}
@@ -176,7 +176,7 @@ export default function AboutContact() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-[#ebebeb] dark:bg-[#1a1a1a] border border-neutral-300 dark:border-neutral-700 focus:border-red-600 focus:outline-none p-3 text-sm text-[#1a1a1a] dark:text-[#ebebeb] font-sans font-light rounded-none transition-colors"
+                    className="w-full bg-[#ebebeb] dark:bg-[#1a1a1a] border border-neutral-300 dark:border-neutral-700 focus:border-red-700 focus:outline-none p-3 text-sm text-[#1a1a1a] dark:text-[#ebebeb] font-sans font-light rounded-none transition-colors"
                     placeholder="Enter full name"
                   />
                 </div>
@@ -191,7 +191,7 @@ export default function AboutContact() {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#ebebeb] dark:bg-[#1a1a1a] border border-neutral-300 dark:border-neutral-700 focus:border-red-600 focus:outline-none p-3 text-sm text-[#1a1a1a] dark:text-[#ebebeb] font-sans font-light rounded-none transition-colors"
+                    className="w-full bg-[#ebebeb] dark:bg-[#1a1a1a] border border-neutral-300 dark:border-neutral-700 focus:border-red-700 focus:outline-none p-3 text-sm text-[#1a1a1a] dark:text-[#ebebeb] font-sans font-light rounded-none transition-colors"
                     placeholder="name@domain.com"
                   />
                 </div>
@@ -206,7 +206,7 @@ export default function AboutContact() {
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full bg-[#ebebeb] dark:bg-[#1a1a1a] border border-neutral-300 dark:border-neutral-700 focus:border-red-600 focus:outline-none p-3 text-sm text-[#1a1a1a] dark:text-[#ebebeb] font-sans font-light rounded-none transition-colors resize-none"
+                    className="w-full bg-[#ebebeb] dark:bg-[#1a1a1a] border border-neutral-300 dark:border-neutral-700 focus:border-red-700 focus:outline-none p-3 text-sm text-[#1a1a1a] dark:text-[#ebebeb] font-sans font-light rounded-none transition-colors resize-none"
                     placeholder="Describe your request, project or idea..."
                   />
                 </div>

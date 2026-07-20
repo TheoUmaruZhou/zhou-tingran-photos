@@ -41,7 +41,7 @@ export default function VideoGallery({ initialCategory = null }: VideoGalleryPro
     <section className="w-full max-w-7xl mx-auto px-6 md:px-12 py-8">
       {/* 标题 */}
       <div className="mb-12">
-        <span className="font-mono text-xs text-red-600 tracking-widest uppercase">
+        <span className="font-mono text-xs text-red-700 tracking-widest uppercase">
           03 / 视频专栏 - VIDEO GALLERY
         </span>
         <h2 className="text-4xl md:text-6xl font-display font-extrabold tracking-tight mt-2 text-[#1a1a1a] dark:text-[#ebebeb] uppercase">
@@ -91,7 +91,7 @@ export default function VideoGallery({ initialCategory = null }: VideoGalleryPro
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.3) }}
             onClick={() => handleVideoClick(video)}
-            className="group relative bg-[#e8e8e8] dark:bg-[#222222] overflow-hidden cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 border border-neutral-300 dark:border-neutral-700 hover:border-red-600/50 dark:hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-600/10 hover:-translate-y-1"
+            className="group relative bg-[#e8e8e8] dark:bg-[#222222] overflow-hidden cursor-pointer hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-all duration-300 border border-neutral-300 dark:border-neutral-700 hover:border-red-700/50 dark:hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-700/10 hover:-translate-y-1"
           >
             {/* 视频封面 */}
             <div className="aspect-video w-full overflow-hidden relative">
@@ -104,12 +104,12 @@ export default function VideoGallery({ initialCategory = null }: VideoGalleryPro
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               {/* 播放按钮 */}
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-125 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-red-500/50">
+                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-125 group-hover:bg-red-700 group-hover:text-white transition-all duration-300 shadow-lg group-hover:shadow-red-500/50">
                   <Play className="w-8 h-8 text-[#1a1a1a] ml-1 group-hover:text-white transition-colors" />
                 </div>
               </div>
               {/* 时长标签 */}
-              <div className="absolute bottom-3 right-3 font-mono text-xs bg-black/70 group-hover:bg-red-600 text-white px-2 py-1 tracking-wider transition-colors duration-300">
+              <div className="absolute bottom-3 right-3 font-mono text-xs bg-black/70 group-hover:bg-red-700 text-white px-2 py-1 tracking-wider transition-colors duration-300">
                 {video.duration}
               </div>
             </div>
@@ -117,9 +117,9 @@ export default function VideoGallery({ initialCategory = null }: VideoGalleryPro
             {/* 视频信息 */}
             <div className="p-5 relative">
               {/* 顶部红线 */}
-              <div className="absolute top-0 left-0 right-0 h-0.5 bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-red-700 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
-              <h3 className="text-lg font-display font-bold text-[#1a1a1a] dark:text-[#ebebeb] mb-2 line-clamp-1 group-hover:text-red-600 transition-colors">
+              <h3 className="text-lg font-display font-bold text-[#1a1a1a] dark:text-[#ebebeb] mb-2 line-clamp-1 group-hover:text-red-700 transition-colors">
                 {video.title}
               </h3>
               <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3 line-clamp-2 font-sans font-light">
@@ -127,18 +127,18 @@ export default function VideoGallery({ initialCategory = null }: VideoGalleryPro
               </p>
               <div className="flex items-center justify-between text-xs text-neutral-400 dark:text-neutral-500">
                 <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1 group-hover:text-red-600 transition-colors">
+                  <span className="flex items-center gap-1 group-hover:text-red-700 transition-colors">
                     <Calendar className="w-3 h-3" />
                     {video.uploadDate}
                   </span>
                   {video.views && (
-                    <span className="flex items-center gap-1 group-hover:text-red-600 transition-colors">
+                    <span className="flex items-center gap-1 group-hover:text-red-700 transition-colors">
                       <Eye className="w-3 h-3" />
                       {formatViews(video.views)}
                     </span>
                   )}
                 </div>
-                <span className="font-mono uppercase tracking-wider text-red-600 group-hover:translate-x-1 transition-transform">
+                <span className="font-mono uppercase tracking-wider text-red-700 group-hover:translate-x-1 transition-transform">
                   播放 →
                 </span>
               </div>
