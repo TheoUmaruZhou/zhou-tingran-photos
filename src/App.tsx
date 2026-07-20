@@ -17,6 +17,7 @@ import { Category, Project, Photograph } from './types';
 import { ArrowUp } from 'lucide-react';
 import { PHOTOGRAPHS } from './data';
 import { trackPageView } from './utils/analytics';
+import MusicPlayer from './components/MusicPlayer';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'works' | 'videos' | 'about'>('home');
@@ -384,6 +385,9 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* 悬浮音乐播放器 */}
+      <MusicPlayer />
     </div>
   );
 }
