@@ -48,6 +48,24 @@ export default function MusicPlayer() {
     }
   }, [volume, isMuted]);
 
+  // 自动播放 - 进入网站后尝试自动播放
+  useEffect(() => {
+    const tryAutoPlay = async () => {
+      if (audioRef.current) {
+        try {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        } catch {
+          // 浏览器阻止自动播放，需要用户手动点击
+        }
+      }
+    };
+
+    // 延迟一点尝试自动播放，确保音频已加载
+    const timer = setTimeout(tryAutoPlay, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   // 手动控制动画 - 使用requestAnimationFrame
   useEffect(() => {
     if (!isExpanded) return;
@@ -102,42 +120,71 @@ export default function MusicPlayer() {
     };
   }, [isExpanded]);
 
-  // 拖拽处理
+  // 拖拽处理 - 支持鼠标和触摸
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging) return;
-      
+
       // 检查是否真正拖动了（移动超过5px才算拖动）
       const dx = e.clientX - dragStartPosition.current.x;
       const dy = e.clientY - dragStartPosition.current.y;
       if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
         setHasDragged(true);
       }
-      
+
       const newX = window.innerWidth - e.clientX - dragOffset.x;
       const newY = window.innerHeight - e.clientY - dragOffset.y;
-      
+
       const maxX = window.innerWidth - 100;
       const maxY = window.innerHeight - 100;
-      
+
       setPosition({
         x: Math.max(0, Math.min(newX, maxX)),
         y: Math.max(0, Math.min(newY, maxY)),
       });
     };
 
-    const handleMouseUp = () => {
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging) return;
+      e.preventDefault(); // 防止页面滚动
+
+      const touch = e.touches[0];
+
+      // 检查是否真正拖动了
+      const dx = touch.clientX - dragStartPosition.current.x;
+      const dy = touch.clientY - dragStartPosition.current.y;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        setHasDragged(true);
+      }
+
+      const newX = window.innerWidth - touch.clientX - dragOffset.x;
+      const newY = window.innerHeight - touch.clientY - dragOffset.y;
+
+      const maxX = window.innerWidth - 100;
+      const maxY = window.innerHeight - 100;
+
+      setPosition({
+        x: Math.max(0, Math.min(newX, maxX)),
+        y: Math.max(0, Math.min(newY, maxY)),
+      });
+    };
+
+    const handleEnd = () => {
       setIsDragging(false);
     };
 
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('mouseup', handleEnd);
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleEnd);
     }
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mouseup', handleEnd);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleEnd);
     };
   }, [isDragging, dragOffset]);
 
@@ -151,6 +198,24 @@ export default function MusicPlayer() {
     const rect = buttonRef.current.getBoundingClientRect();
     const offsetX = rect.right - e.clientX;
     const offsetY = rect.bottom - e.clientY;
+
+    setDragOffset({ x: offsetX, y: offsetY });
+    setIsDragging(true);
+  };
+
+  // 触摸开始处理
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!buttonRef.current) return;
+
+    const touch = e.touches[0];
+
+    // 记录起始位置
+    dragStartPosition.current = { x: touch.clientX, y: touch.clientY };
+    setHasDragged(false);
+
+    const rect = buttonRef.current.getBoundingClientRect();
+    const offsetX = rect.right - touch.clientX;
+    const offsetY = rect.bottom - touch.clientY;
 
     setDragOffset({ x: offsetX, y: offsetY });
     setIsDragging(true);
@@ -239,6 +304,14 @@ export default function MusicPlayer() {
               onClick={togglePlay}
               onMouseEnter={handlePlayBallMouseEnter}
               onMouseLeave={handlePlayBallMouseLeave}
+              onTouchStart={() => {
+                playBallPausedRef.current = true;
+                setIsPlayBallPaused(true);
+              }}
+              onTouchEnd={() => {
+                playBallPausedRef.current = false;
+                setIsPlayBallPaused(false);
+              }}
               className={`absolute w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-colors pointer-events-auto ${
                 isPlaying
                   ? 'bg-red-700 text-white'
@@ -261,6 +334,16 @@ export default function MusicPlayer() {
             className="absolute inset-0 pointer-events-auto"
             onMouseEnter={handleVolumeBallMouseEnter}
             onMouseLeave={handleVolumeBallMouseLeave}
+            onTouchStart={() => {
+              volumeBallPausedRef.current = true;
+              setIsVolumeBallPaused(true);
+              setShowVolumeSlider(true);
+            }}
+            onTouchEnd={() => {
+              volumeBallPausedRef.current = false;
+              setIsVolumeBallPaused(false);
+              setShowVolumeSlider(false);
+            }}
           >
             {/* 音量球按钮 - 在圆周上（半径55px） */}
             <button
@@ -284,7 +367,8 @@ export default function MusicPlayer() {
             {showVolumeSlider && (
               <div
                 className="absolute bg-neutral-800/95 backdrop-blur-sm px-2 py-1.5 rounded-lg shadow-lg border border-neutral-700"
-                style={{ left: 'calc(50% + 55px - 75px)', top: 'calc(50% - 10px)' }}
+                style={{ left: 'calc(50% + 55px - 75px)', top: 'calc(50% - 10px)', touchAction: 'none' }}
+                onTouchStart={(e) => e.stopPropagation()}
               >
                 <input
                   type="range"
@@ -293,8 +377,10 @@ export default function MusicPlayer() {
                   step="0.01"
                   value={isMuted ? 0 : volume}
                   onChange={handleVolumeChange}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onTouchMove={(e) => e.stopPropagation()}
                   className="w-14 h-1 bg-neutral-600 rounded-lg appearance-none cursor-pointer accent-red-700"
-                  style={{ writingMode: 'horizontal-tb' }}
+                  style={{ writingMode: 'horizontal-tb', touchAction: 'none' }}
                 />
               </div>
             )}
@@ -306,10 +392,11 @@ export default function MusicPlayer() {
       <button
         ref={buttonRef}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onClick={handleButtonClick}
         className={`relative w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 ${
-          isExpanded 
-            ? 'bg-red-700 text-white' 
+          isExpanded
+            ? 'bg-red-700 text-white'
             : 'bg-neutral-500/80 text-white hover:bg-neutral-400/80'
         }`}
         style={{ boxShadow: isPlaying ? '0 0 12px rgba(185, 28, 28, 0.4)' : '0 2px 8px rgba(0,0,0,0.2)' }}
