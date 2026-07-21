@@ -375,7 +375,7 @@ export default function Lightbox({
     stopAutoPlay();
     timerRef.current = setInterval(() => {
       onNextRef.current();
-    }, 3000);
+    }, 6000); // 6秒自动播放，让读者有时间仔细看照片
   }, [stopAutoPlay]);
 
   const toggleAutoPlay = useCallback(() => {
