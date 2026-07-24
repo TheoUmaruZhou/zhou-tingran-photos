@@ -128,6 +128,13 @@ export default function HomeHero({
       time: '2024 – 2026',
       image: '/images/专题-生灵日记/喵.webp',
     },
+    {
+      id: Project.CoalCity,
+      num: 'P.07',
+      name: '煤都 / Coal City',
+      time: '2024 – 2026',
+      image: '/images/专题-煤都/驻.webp',
+    },
   ];
 
   return (
@@ -184,8 +191,8 @@ export default function HomeHero({
       <section ref={featuredRef} className="relative w-full max-w-[1400px] mx-auto px-4 md:px-12 mb-28">
         <div className="relative aspect-[21/9] w-full overflow-hidden bg-neutral-300 dark:bg-neutral-700 group" data-cursor-enlarge>
           <motion.img
-            src="/images/专题-生灵日记/喵.webp"
-            alt="喵 / Meow"
+            src="/images/专题-煤都/滞留 NO.2.webp"
+            alt="滞留 No.2 / Stay No.2"
             style={{ y: parallaxY }}
             className="w-full h-full object-cover group-hover:scale-[1.02] transition-all duration-1000 ease-out scale-110"
             referrerPolicy="no-referrer"
@@ -193,17 +200,17 @@ export default function HomeHero({
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1a1a1a]/90 dark:from-[#ebebeb]/90 via-[#1a1a1a]/40 dark:via-[#ebebeb]/40 to-transparent p-6 md:p-10 flex flex-col md:flex-row justify-between items-end gap-6">
             <div>
               <span className="font-mono text-xs text-red-500 tracking-wider">FEATURED RECENT / 近期精选</span>
-              <h2 className="text-2xl md:text-3xl font-display font-bold mt-1 uppercase text-white">PICTORIAL PHOTOGRAPHY</h2>
-              <p className="text-xs md:text-sm text-neutral-400 dark:text-neutral-500 mt-1">Chong Qing · Yuan Bo Yuan 32MP</p>
+              <h2 className="text-2xl md:text-3xl font-display font-bold mt-1 uppercase text-white">COAL CITY · 煤都</h2>
+              <p className="text-xs md:text-sm text-neutral-400 dark:text-neutral-500 mt-1">Chong Qing · Wansheng District</p>
             </div>
             <div className="flex items-center gap-6 font-mono text-xs text-neutral-400 dark:text-neutral-500">
               <div>
                 <p className="text-neutral-500 dark:text-neutral-400">FOCAL LENGTH</p>
-                <p>35mm (EF 24-70mm)</p>
+                <p>35mm (FE 24-70mm)</p>
               </div>
               <div className="hidden sm:block">
                 <p className="text-neutral-500 dark:text-neutral-400">EXPOSURE</p>
-                <p>1/125s at f/11</p>
+                <p>1/250s at f/8</p>
               </div>
               <button
                 onClick={onExploreAll}

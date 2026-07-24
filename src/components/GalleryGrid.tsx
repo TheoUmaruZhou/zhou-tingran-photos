@@ -72,7 +72,7 @@ export default function GalleryGrid({
   };
 
   const filteredPhotographs = useMemo(() => {
-    return PHOTOGRAPHS.filter((p) => {
+    let photos = PHOTOGRAPHS.filter((p) => {
       if (selectedProject) {
         return p.project === selectedProject;
       }
@@ -81,6 +81,20 @@ export default function GalleryGrid({
       }
       return true; // 全部作品：显示所有照片
     });
+
+    // 在"全部摄影"模式下，去除重复的图片（基于imageUrl去重）
+    if (!selectedProject && !selectedCategory) {
+      const seenUrls = new Set<string>();
+      photos = photos.filter((p) => {
+        if (seenUrls.has(p.imageUrl)) {
+          return false; // 跳过重复的图片
+        }
+        seenUrls.add(p.imageUrl);
+        return true;
+      });
+    }
+
+    return photos;
   }, [selectedCategory, selectedProject]);
 
   const visiblePhotographs = useMemo(() => {

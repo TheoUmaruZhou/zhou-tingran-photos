@@ -18,6 +18,7 @@ export enum Project {
   TuGuan = 'tu-guan',
   DailyMoments = 'daily-moments',
   LivingDiary = 'living-diary',
+  CoalCity = 'coal-city',
 }
 
 export enum VideoCategory {
