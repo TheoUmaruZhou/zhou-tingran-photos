@@ -500,7 +500,7 @@ export default function Lightbox({
           className={`flex-1 w-full ${isFullscreen ? '' : 'max-w-8xl'} mx-auto flex flex-col lg:flex-row items-stretch select-none`}
         >
           <div
-            className={`flex-1 relative ${isFullscreen ? 'bg-black' : 'bg-neutral-300'} flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-4 md:p-8'} min-h-[50vh] lg:min-h-0`}
+            className={`flex-1 relative ${isFullscreen ? 'bg-black' : 'bg-neutral-300 dark:bg-neutral-800'} flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-4 md:p-8'} min-h-[50vh] lg:min-h-0`}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
