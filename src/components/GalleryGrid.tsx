@@ -52,7 +52,7 @@ export default function GalleryGrid({
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   
   const [page, setPage] = useState(1);
-  const itemsPerPage = 30;
+  const itemsPerPage = 20;
 
   const handleImageLoad = useCallback((id: string) => {
     setLoadedImages((prev) => new Set(prev).add(id));
