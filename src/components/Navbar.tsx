@@ -199,6 +199,22 @@ export default function Navbar({
             <span>About / 关于</span>
             <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-700 transition-all duration-300 ${activeTab === 'about' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </button>
+
+          {/* Magazine - 特殊视觉按钮 */}
+          <a
+            href="https://photography-magazine-tool.pages.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cursor-pointer transition-all duration-300 relative group flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-red-600 to-orange-500 text-white font-bold uppercase rounded-full hover:shadow-lg hover:shadow-red-500/25 hover:scale-105 active:scale-95"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+              <path d="M8 7h6"/>
+              <path d="M8 11h8"/>
+            </svg>
+            <span>Magazine</span>
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping" />
+          </a>
         </div>
 
         {/* 右侧状态 */}

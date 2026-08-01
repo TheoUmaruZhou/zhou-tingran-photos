@@ -1,4 +1,4 @@
-import { Home, Grid3X3, User, Video } from 'lucide-react';
+import { Home, Grid3X3, User, Video, BookOpen } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon } from 'lucide-react';
 
@@ -37,13 +37,15 @@ export default function MobileBottomNav({ activeTab, onNavigateTab }: MobileBott
             </button>
           );
         })}
-        <button
-          onClick={toggleTheme}
-          className="flex flex-col items-center justify-center gap-1 flex-1 h-full text-neutral-400 dark:text-neutral-500 transition-colors cursor-pointer"
+        <a
+          href="https://photography-magazine-tool.pages.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center justify-center gap-1 flex-1 h-full bg-gradient-to-r from-red-600 to-orange-500 text-white transition-all cursor-pointer"
         >
-          {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          <span className="font-mono text-[9px] tracking-wider uppercase">{dark ? 'LIGHT' : 'DARK'}</span>
-        </button>
+          <BookOpen className="w-5 h-5" />
+          <span className="font-mono text-[9px] tracking-wider uppercase font-bold">MAG</span>
+        </a>
       </div>
     </nav>
   );
