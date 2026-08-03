@@ -217,7 +217,7 @@ export default function Navbar({
 
           {/* Magazine - 特殊视觉按钮 */}
           <a
-            href="https://photography-magazine-tool.pages.dev/"
+            href="https://m-studio-magazine.pages.dev/"
             target="_blank"
             rel="noopener noreferrer"
             className="cursor-pointer transition-all duration-300 relative group flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-red-600 to-orange-500 text-white font-bold uppercase rounded-full hover:shadow-lg hover:shadow-red-500/25 hover:scale-105 active:scale-95"

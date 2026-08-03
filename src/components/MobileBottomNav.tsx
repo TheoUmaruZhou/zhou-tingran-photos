@@ -38,7 +38,7 @@ export default function MobileBottomNav({ activeTab, onNavigateTab }: MobileBott
           );
         })}
         <a
-          href="https://photography-magazine-tool.pages.dev/"
+          href="https://m-studio-magazine.pages.dev/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex flex-col items-center justify-center gap-1 flex-1 h-full bg-gradient-to-r from-red-600 to-orange-500 text-white transition-all cursor-pointer"
