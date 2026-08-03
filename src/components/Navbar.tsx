@@ -200,6 +200,21 @@ export default function Navbar({
             <span className={`absolute -bottom-1 left-0 h-0.5 bg-red-700 transition-all duration-300 ${activeTab === 'about' ? 'w-full' : 'w-0 group-hover:w-full'}`} />
           </button>
 
+          {/* 排序工具 - 仅在开发环境可用 */}
+          {typeof window !== 'undefined' && window.location.hostname === 'localhost' && (
+            <button
+              onClick={() => onNavigateTab('sorter' as any)}
+              className={`cursor-pointer transition-all duration-200 uppercase relative group flex items-center gap-1.5 px-4 py-2 border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white rounded-full font-bold ${
+                activeTab === 'sorter' ? 'bg-red-600 text-white' : ''
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 6h18M7 12h10M10 18h4" />
+              </svg>
+              <span>排序</span>
+            </button>
+          )}
+
           {/* Magazine - 特殊视觉按钮 */}
           <a
             href="https://photography-magazine-tool.pages.dev/"

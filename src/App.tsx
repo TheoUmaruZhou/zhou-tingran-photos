@@ -13,13 +13,14 @@ import AboutContact from './components/AboutContact';
 import MobileBottomNav from './components/MobileBottomNav';
 import SplashScreen from './components/SplashScreen';
 import VideoGallery from './components/VideoGallery';
+import PhotoSorter from './components/PhotoSorter';
 import { Category, Project, Photograph } from './types';
 import { ArrowUp } from 'lucide-react';
 import { PHOTOGRAPHS } from './data';
 import { trackPageView } from './utils/analytics';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'home' | 'works' | 'videos' | 'about'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'works' | 'videos' | 'about' | 'sorter'>('home');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
@@ -278,6 +279,20 @@ export default function App() {
               className="w-full pt-6"
             >
               <AboutContact />
+            </motion.div>
+          )}
+
+          {/* 图片排序管理工具 - 仅在开发环境可用 */}
+          {activeTab === 'sorter' && window.location.hostname === 'localhost' && (
+            <motion.div
+              key="sorter"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full"
+            >
+              <PhotoSorter />
             </motion.div>
           )}
         </AnimatePresence>

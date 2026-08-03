@@ -1,6 +1,8 @@
 import { Photograph, Video, VideoCategory, VideoCategoryDetails, Project } from './types';
+import { sortPhotosByCustomOrder } from './config/photoOrder';
 
-export const PHOTOGRAPHS: Photograph[] = [
+// 原始图片数据（未排序）
+const RAW_PHOTOGRAPHS: Photograph[] = [
   {
     id: 'img1',
     title: '中线',
@@ -4146,3 +4148,6 @@ export const VIDEOS: Video[] = [
     tags: ['城市边缘', '纪实摄影', '重庆'],
   },
 ];
+
+// 应用自定义排序
+export const PHOTOGRAPHS: Photograph[] = sortPhotosByCustomOrder(RAW_PHOTOGRAPHS);
